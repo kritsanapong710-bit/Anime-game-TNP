@@ -3,88 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anime Party Games (Monochrome Theme Edition)</title>
+    <title>Anime Party Games (V16 Bug Fix & Fun SFX)</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            /* Light Mode Default */
             --bg-color: #f1f2f6; 
             --panel-bg: #ffffff;
             --text-main: #2d3436;
             --text-muted: #636e72;
             
-            /* Game Colors (Keep these vibrant for gameplay) */
             --team-a: #ff4757;
             --team-b: #1e90ff;
             --accent: #2ed573;
             --host-color: #ffa502;
             --admin-color: #9c88ff;
             
-            /* Dynamic Borders & Shadows */
             --border-color: #2d3436;
-            --border-heavy: 3px solid var(--border-color);
+            --border-heavy: 4px solid var(--border-color);
             --shadow-color: rgba(45, 52, 54, 1);
             --shadow-heavy: 5px 5px 0px var(--shadow-color);
             --shadow-hover: 2px 2px 0px var(--shadow-color);
         }
 
         body.dark-mode {
-            --bg-color: #111111; 
-            --panel-bg: #1e1e1e;
-            --text-main: #ffffff;
-            --text-muted: #a4b0be;
-            
-            --border-color: #ffffff;
-            --shadow-color: rgba(255, 255, 255, 0.2);
+            --bg-color: #111111; --panel-bg: #1e1e1e; --text-main: #ffffff; --text-muted: #a4b0be;
+            --border-color: #ffffff; --shadow-color: rgba(255, 255, 255, 0.2);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Kanit', sans-serif; }
         
         body { 
-            background-color: var(--bg-color); 
-            color: var(--text-main); 
-            min-height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            padding: 2rem 1rem; 
-            overflow-x: hidden;
-            transition: background-color 0.3s, color 0.3s;
+            background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; 
+            display: flex; flex-direction: column; align-items: center; padding: 2rem 1rem; 
+            overflow-x: hidden; transition: background-color 0.3s, color 0.3s;
         }
         
         body:not(.no-vfx) {
-            background-image: radial-gradient(var(--shadow-color) 15%, transparent 15%), radial-gradient(var(--shadow-color) 15%, transparent 15%);
-            background-position: 0 0, 20px 20px;
-            background-size: 40px 40px;
-            background-color: var(--bg-color);
-        }
-        body.dark-mode:not(.no-vfx) {
-            background-image: radial-gradient(rgba(255,255,255,0.05) 15%, transparent 15%), radial-gradient(rgba(255,255,255,0.05) 15%, transparent 15%);
+            background-image: radial-gradient(var(--shadow-color) 10%, transparent 10%), radial-gradient(var(--shadow-color) 10%, transparent 10%);
+            background-position: 0 0, 20px 20px; background-size: 40px 40px; background-color: var(--bg-color);
         }
 
-        h1, h2, h3 { font-weight: 800; }
+        h1, h2, h3 { font-weight: 900; }
         
         .main-title { 
             font-size: 3.5rem; margin-bottom: 0.5rem; text-align: center; color: var(--text-main);
-            text-shadow: 3px 3px 0px var(--shadow-color);
-            letter-spacing: 1px;
-            background: var(--panel-bg);
-            padding: 0 1rem;
-            border: var(--border-heavy);
-            border-radius: 12px;
-            display: inline-block;
+            text-shadow: 3px 3px 0px var(--shadow-color); background: var(--panel-bg);
+            padding: 0 1.5rem; border: var(--border-heavy); border-radius: 12px; display: inline-block;
         }
 
         .subtitle {
             background: var(--panel-bg); color: var(--text-main); padding: 0.5rem 1.5rem; border: var(--border-heavy);
-            border-radius: 20px; box-shadow: var(--shadow-heavy); font-weight: 700; margin-bottom: 2rem;
+            border-radius: 20px; box-shadow: var(--shadow-heavy); font-weight: 800; margin-bottom: 2rem;
         }
 
         .screen { 
@@ -93,29 +69,24 @@
             box-shadow: var(--shadow-heavy); display: none; position: relative; 
         }
         .screen.active { display: block; }
-        
         body:not(.no-anim) .screen.active { animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Inputs & Buttons */
         .input-group { margin-bottom: 1.5rem; }
-        .input-group label { display: block; margin-bottom: 0.5rem; font-weight: 700; font-size: 1.1rem; color: var(--text-main); }
+        .input-group label { display: block; margin-bottom: 0.5rem; font-weight: 800; font-size: 1.2rem; color: var(--text-main); }
         input[type="text"], input[type="color"], select { 
-            width: 100%; padding: 0.8rem 1rem; border-radius: 12px; 
-            border: var(--border-heavy); background: var(--bg-color); color: var(--text-main); 
-            font-size: 1.1rem; outline: none; font-weight: 600;
+            width: 100%; padding: 1rem; border-radius: 12px; border: var(--border-heavy); 
+            background: var(--bg-color); color: var(--text-main); font-size: 1.2rem; outline: none; font-weight: 700;
         }
         input[type="text"]:focus, select:focus { border-color: var(--accent); }
-        input[type="color"] { padding: 0.2rem; height: 50px; cursor: pointer; }
 
         button { 
-            cursor: pointer; padding: 0.8rem 1.5rem; border: var(--border-heavy); 
-            border-radius: 12px; font-size: 1.1rem; font-weight: 800; color: white; 
-            transition: all 0.1s ease-in-out; box-shadow: var(--shadow-heavy);
-            text-shadow: 1px 1px 0px rgba(0,0,0,0.5);
+            cursor: pointer; padding: 1rem 1.5rem; border: var(--border-heavy); border-radius: 12px; 
+            font-size: 1.2rem; font-weight: 900; color: white; transition: all 0.1s ease-in-out; 
+            box-shadow: var(--shadow-heavy); text-shadow: 1px 1px 0px rgba(0,0,0,0.5);
         }
-        
-        body:not(.no-anim) button:active:not(:disabled) { transform: translate(2px, 2px); box-shadow: var(--shadow-hover); }
+        body:not(.no-anim) button:active:not(:disabled) { transform: translate(3px, 3px); box-shadow: var(--shadow-hover); }
         button:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); transform: none; box-shadow: var(--shadow-heavy); }
 
         .btn-primary { background: var(--accent); color: #000; text-shadow: none;}
@@ -126,72 +97,100 @@
         .btn-danger { background: #ff4757; }
         .btn-success { background: #2ed573; color: #000; text-shadow: none;}
         
-        .btn-reveal { background: #ffa502; width: 100%; padding: 1.2rem; font-size: 1.3rem; margin-top: 1.5rem; color:#000; text-shadow:none;}
+        .btn-reveal { background: #ffa502; width: 100%; padding: 1.2rem; font-size: 1.5rem; margin-top: 1.5rem; color:#000; text-shadow:none;}
         body:not(.no-anim) .btn-reveal { animation: pulseBg 2s infinite; }
         @keyframes pulseBg { 0% { background-color: #ffa502; } 50% { background-color: #ff7f50; } 100% { background-color: #ffa502; } }
 
-        .btn-buzzer { 
-            background: #ff4757; border-radius: 50%; width: 150px; height: 150px; 
-            font-size: 2.5rem; border: 6px solid var(--border-color); box-shadow: 0 10px 0 var(--border-color), 0 15px 15px rgba(0,0,0,0.3); 
-            display: block; margin: 2rem auto; text-shadow: 2px 2px 0 #000; color: #fff;
-        }
-        body:not(.no-anim) .btn-buzzer:active:not(:disabled) { transform: translateY(10px); box-shadow: 0 0 0 var(--border-color), 0 5px 5px rgba(0,0,0,0.3); }
-
         /* Profiles & Grid */
         .profile-preview { display: flex; flex-direction: column; align-items: center; margin-bottom: 1.5rem; position: relative;}
-        .avatar-img { 
-            width: 130px; height: 130px; border-radius: 50%; background: var(--panel-bg); 
-            border: 4px solid var(--border-color); object-fit: cover; margin-bottom: 1rem; box-shadow: var(--shadow-heavy); 
-        }
+        .avatar-img { width: 130px; height: 130px; border-radius: 50%; background: var(--panel-bg); border: var(--border-heavy); object-fit: cover; margin-bottom: 1rem; box-shadow: var(--shadow-heavy); }
         
-        .players-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; margin-top: 1rem; margin-bottom: 2rem; }
+        .players-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem; margin-top: 1rem; margin-bottom: 2rem; }
         
         .player-card { 
-            background: var(--panel-bg); padding: 1rem; border-radius: 16px; text-align: center; 
+            background: var(--panel-bg); padding: 1.5rem 1rem; border-radius: 16px; text-align: center; 
             border: var(--border-heavy); position: relative; display: flex; flex-direction: column; 
-            align-items: center; justify-content: flex-end; min-height: 160px; box-shadow: var(--shadow-heavy);
+            align-items: center; justify-content: flex-end; width: 160px; min-height: 180px; box-shadow: var(--shadow-heavy);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
         .player-card img.avatar { width: 80px; height: 80px; border-radius: 50%; background: var(--bg-color); margin-bottom: 0.5rem; z-index: 2; position: relative; border: 3px solid var(--border-color); }
-        .player-name { background: var(--text-main); color: var(--panel-bg); padding: 0.2rem 0.6rem; border-radius: 8px; font-size: 0.9rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
-        .player-role-badge { position: absolute; top: -10px; right: -10px; background: var(--panel-bg); color: var(--text-main); font-size: 0.7rem; padding: 3px 8px; border-radius: 10px; font-weight: 800; z-index: 5; border: 2px solid var(--border-color); box-shadow: 2px 2px 0px var(--border-color); }
+        .player-name { background: var(--text-main); color: var(--panel-bg); padding: 0.3rem 0.6rem; border-radius: 8px; font-size: 1rem; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; z-index: 2; }
+        
+        .player-role-badge { position: absolute; top: -12px; right: -10px; background: var(--panel-bg); color: var(--text-main); font-size: 0.8rem; padding: 4px 10px; border-radius: 10px; font-weight: 900; z-index: 5; border: 3px solid var(--border-color); box-shadow: 2px 2px 0px var(--border-color); }
         .host-badge { background: var(--host-color); border-color: #000; color: #000;}
         .admin-badge { background: var(--admin-color); color: #fff; border-color: #000;}
 
-        /* Headband & Jail */
-        .headband-img { 
-            position: absolute; top: -40px; left: 50%; transform: translateX(-50%); 
-            width: 75px; height: 100px; object-fit: cover; border-radius: 8px; 
-            border: 3px solid var(--border-color); z-index: 1; box-shadow: var(--shadow-heavy); background: var(--panel-bg);
+        /* --- TURN SYSTEM HIGHLIGHT --- */
+        .player-card.active-turn {
+            border-color: var(--accent);
+            box-shadow: 0 0 25px var(--accent), 5px 5px 0px var(--shadow-color);
+            transform: translateY(-15px) scale(1.05);
+            background: rgba(46, 213, 115, 0.1);
         }
-        .headband-unknown { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); font-size: 3.5rem; text-shadow: 2px 2px 0 var(--border-color); z-index: 1; color: var(--bg-color); }
-        
-        body:not(.no-anim) .headband-img { animation: bounceIn 2s infinite; }
-        @keyframes bounceIn { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, -10px); } }
-        
-        .jail-overlay { position: absolute; top: -5px; left: -5px; right: -5px; bottom: -5px; background: repeating-linear-gradient( 45deg, rgba(255, 71, 87, 0.9), rgba(255, 71, 87, 0.9) 10px, rgba(0, 0, 0, 0.8) 10px, rgba(0, 0, 0, 0.8) 20px ); border-radius: 16px; z-index: 10; display: flex; align-items: center; justify-content: center; flex-direction: column; border: 4px solid var(--border-color); }
-        .jail-text { background: var(--panel-bg); color: var(--text-main); font-size: 1.2rem; font-weight: 800; padding: 4px 10px; border: 3px solid var(--border-color); transform: rotate(-10deg); }
+        .turn-badge {
+            position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%);
+            background: var(--accent); color: #000; padding: 5px 15px; border-radius: 12px;
+            font-weight: 900; font-size: 1.2rem; border: var(--border-heavy); z-index: 20; white-space: nowrap;
+            box-shadow: 3px 3px 0px rgba(0,0,0,0.5);
+            animation: bounceIn 1s infinite;
+        }
 
-        /* Modals */
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 100; display: none; align-items: center; justify-content: center; backdrop-filter: blur(3px); }
-        .modal-content { background: var(--panel-bg); color: var(--text-main); padding: 2rem; border-radius: 20px; text-align: center; max-width: 450px; width: 90%; border: var(--border-heavy); box-shadow: 8px 8px 0px rgba(0,0,0,0.5); max-height: 90vh; overflow-y: auto;}
-        .vote-buttons { display: flex; gap: 1rem; margin-top: 1.5rem; justify-content: center; flex-wrap: wrap; }
+        /* --- WINNER OVERLAY --- */
+        .winner-overlay {
+            position: absolute; inset: -4px; background: var(--accent); border-radius: 16px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: #000; font-weight: 900; z-index: 20; border: var(--border-heavy);
+            box-shadow: inset 0 0 20px rgba(255,255,255,0.5);
+        }
+        .winner-overlay h3 { font-size: 1.5rem; margin-bottom: 5px; text-shadow: 1px 1px 0px #fff;}
+        .winner-overlay p { font-size: 1.2rem; background: #000; color: #fff; padding: 5px 10px; border-radius: 8px;}
+
+        /* Headband Images */
+        .headband-img { 
+            position: absolute; top: -65px; left: 50%; transform: translateX(-50%); 
+            width: 100px; height: 135px; object-fit: cover; border-radius: 12px; 
+            border: var(--border-heavy); z-index: 10; box-shadow: var(--shadow-heavy); background: var(--panel-bg);
+        }
+        .headband-unknown { 
+            position: absolute; top: -50px; left: 50%; transform: translateX(-50%); 
+            font-size: 5rem; text-shadow: 2px 2px 0 var(--border-color); z-index: 10; color: var(--bg-color); 
+        }
+        
+        body:not(.no-anim) .headband-img { animation: floatHB 2.5s infinite ease-in-out; }
+        @keyframes floatHB { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, -12px); } }
+        
+        /* Modals (BIG UI) */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 100; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal-content { 
+            background: var(--panel-bg); color: var(--text-main); padding: 3rem 2rem; 
+            border-radius: 24px; text-align: center; max-width: 600px; width: 95%; 
+            border: 6px solid var(--border-color); box-shadow: 15px 15px 0px rgba(0,0,0,0.5); 
+            max-height: 95vh; overflow-y: auto;
+        }
+        .vote-buttons { display: flex; gap: 1.5rem; margin-top: 2rem; justify-content: center; flex-wrap: wrap; }
+        .vote-buttons button { font-size: 1.5rem; padding: 1rem 2rem; }
+
+        /* LIVE SCORE UI */
+        .live-score { display: flex; justify-content: center; gap: 2rem; margin: 1.5rem 0; font-size: 2.5rem; font-weight: 900; }
+        .score-yes { color: var(--accent); text-shadow: 1px 1px 0px #000; }
+        .score-no { color: #ff4757; text-shadow: 1px 1px 0px #000; }
 
         /* Game Areas */
         .host-panel { background: var(--bg-color); border: var(--border-heavy); padding: 1.5rem; border-radius: 16px; margin-bottom: 2rem; box-shadow: var(--shadow-heavy); }
-        .video-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
-        .video-btn { background: var(--panel-bg); color: var(--text-main); font-size: 0.9rem; padding: 0.6rem 1rem; border-radius: 10px; border: 2px solid var(--border-color); font-weight: 700; text-shadow: none; }
+        .video-list { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1rem; }
+        .video-btn { background: var(--panel-bg); color: var(--text-main); font-size: 1rem; padding: 0.8rem 1.2rem; border-radius: 10px; border: var(--border-heavy); font-weight: 800; text-shadow: none; }
         .video-btn:hover { background: var(--text-muted); color: var(--panel-bg); }
         
         .search-container { position: relative; margin-bottom: 1rem; width: 100%; }
-        .search-results { position: absolute; top: 100%; left: 0; right: 0; background: var(--panel-bg); border: var(--border-heavy); border-radius: 0 0 10px 10px; max-height: 250px; overflow-y: auto; z-index: 20; display: none; text-align: left; }
-        .search-item { display: flex; align-items: center; padding: 0.6rem; cursor: pointer; border-bottom: 1px solid var(--text-muted); font-weight: 600; color: var(--text-main);}
+        .search-results { position: absolute; top: 100%; left: 0; right: 0; background: var(--panel-bg); border: var(--border-heavy); border-radius: 0 0 12px 12px; max-height: 300px; overflow-y: auto; z-index: 20; display: none; text-align: left; }
+        .search-item { display: flex; align-items: center; padding: 0.8rem; cursor: pointer; border-bottom: 2px solid var(--text-muted); font-weight: 700; color: var(--text-main); font-size: 1.1rem;}
         .search-item:hover { background: var(--bg-color); }
-        .search-item img { width: 40px; height: 55px; object-fit: cover; border-radius: 4px; margin-right: 10px; border: 1px solid var(--border-color); }
+        .search-item img { width: 50px; height: 70px; object-fit: cover; border-radius: 6px; margin-right: 15px; border: var(--border-heavy); }
         
-        .card-display { background: var(--panel-bg); border-radius: 16px; padding: 1.5rem; text-align: center; min-height: 250px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 1rem; border: var(--border-heavy); position: relative; overflow: hidden; box-shadow: var(--shadow-heavy); }
-        .header-bar { display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 3px dashed var(--border-color); margin-bottom: 1.5rem; }
+        .card-display { background: var(--panel-bg); border-radius: 20px; padding: 2rem; text-align: center; min-height: 250px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 1rem; border: var(--border-heavy); position: relative; overflow: hidden; box-shadow: var(--shadow-heavy); }
+        .header-bar { display: flex; justify-content: space-between; align-items: center; padding-bottom: 1.5rem; border-bottom: 4px dashed var(--border-color); margin-bottom: 1.5rem; }
 
-        /* Game 4 (Tier List) Styles */
+        /* Game 4 Tier List */
         .tier-board { display: flex; flex-direction: column; gap: 0.8rem; margin-top: 1rem; background: var(--bg-color); padding: 10px; border-radius: 12px;}
         .tier-row { display: flex; background: var(--panel-bg); border-radius: 12px; overflow: hidden; min-height: 90px; border: var(--border-heavy); transition: background 0.2s; box-shadow: var(--shadow-heavy);}
         .tier-row.drag-over { background: var(--bg-color); border-color: var(--accent); }
@@ -199,55 +198,47 @@
         .tier-label { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800; color: #fff; text-shadow: 1px 1px 0 #000, -1px -1px 0 #000; cursor: pointer; text-align: center; line-height: 1.2;}
         .tier-controls { display: flex; height: 25px; background: #000; border-top: 1px solid var(--border-color);}
         .tier-btn { flex: 1; background: transparent; border: none; color: white; font-size: 0.8rem; cursor: pointer; padding: 0; box-shadow: none; text-shadow: none;}
-        .tier-btn:hover { background: #333; transform: none; }
         
         .tier-items { flex: 1; display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0.5rem; align-items: flex-start; }
-        .tier-pool { background: var(--panel-bg); border: 3px dashed var(--border-color); border-radius: 12px; min-height: 120px; padding: 1rem; margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; transition: background 0.2s;}
-        .tier-pool.drag-over { background: var(--bg-color); border-color: var(--accent); }
-        
-        .tier-item-card { width: 65px; height: 90px; background: var(--panel-bg); border-radius: 6px; overflow: hidden; cursor: grab; transition: transform 0.1s; position: relative; border: 2px solid var(--border-color); }
+        .tier-pool { background: var(--panel-bg); border: 4px dashed var(--border-color); border-radius: 16px; min-height: 120px; padding: 1.5rem; margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 0.8rem; justify-content: center; transition: background 0.2s;}
+        .tier-item-card { width: 65px; height: 90px; background: var(--panel-bg); border-radius: 6px; overflow: hidden; cursor: grab; transition: transform 0.1s; position: relative; border: var(--border-heavy); }
         .tier-item-card:active { cursor: grabbing; }
-        .tier-item-card.dragging { opacity: 0.5; transform: scale(0.9); }
-        
-        body:not(.no-anim) .tier-item-card:hover:not(.dragging) { transform: scale(1.1); z-index: 5; box-shadow: 3px 3px 0px var(--border-color); }
         .tier-item-card img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
-        .tier-item-card .item-name { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.8); color: white; font-size: 0.55rem; padding: 2px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; font-weight: bold; }
-        
-        .preset-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 0.5rem; max-height: 200px; overflow-y: auto; padding: 0.8rem; background: var(--bg-color); border-radius: 8px; border: var(--border-heavy); }
-        .preset-btn { background: var(--panel-bg); color: var(--text-main); font-size: 0.8rem; font-weight: 700; padding: 0.4rem; border-radius: 6px; text-align: center; cursor: pointer; border: 2px solid var(--border-color); box-shadow: 2px 2px 0px var(--shadow-color); }
-        .preset-btn:hover { background: var(--text-main); color: var(--panel-bg); }
+        .tier-item-card .item-name { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.8); color: white; font-size: 0.6rem; padding: 2px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; font-weight: bold; }
+        .preset-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 0.8rem; max-height: 250px; overflow-y: auto; padding: 0.8rem; background: var(--bg-color); border-radius: 12px; border: var(--border-heavy); }
+        .preset-btn { background: var(--panel-bg); color: var(--text-main); font-size: 0.9rem; font-weight: 800; padding: 0.5rem; border-radius: 8px; text-align: center; cursor: pointer; border: var(--border-heavy); box-shadow: var(--shadow-hover); }
 
-        /* Settings Toggle */
-        .settings-btn { position: absolute; top: 1rem; right: 1rem; background: transparent; border: none; font-size: 2rem; box-shadow: none; padding: 0; }
-        .settings-btn:hover { transform: rotate(45deg); filter: none; }
+        .settings-btn { position: absolute; top: 1rem; right: 1rem; background: transparent; border: none; font-size: 2.5rem; box-shadow: none; padding: 0; }
+        .settings-btn:hover { transform: rotate(45deg); filter: none; box-shadow: none;}
+        .toggle-switch { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; padding: 0.5rem; border-bottom: 2px solid var(--text-muted); }
+        .radio-group { display: flex; gap: 1.5rem; justify-content: center; margin-bottom: 1rem; font-weight: 800; font-size: 1.1rem;}
+        .radio-group label { display: flex; align-items: center; gap: 8px; cursor: pointer; margin:0; color: var(--text-main);}
         
-        .toggle-switch { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; padding: 0.5rem; border-bottom: 1px solid var(--text-muted); }
-        
-        .radio-group { display: flex; gap: 1rem; justify-content: center; margin-bottom: 0.5rem; font-weight: bold; font-size: 0.9rem;}
-        .radio-group label { display: flex; align-items: center; gap: 5px; cursor: pointer; margin:0; color: var(--text-main);}
+        .buzzer-btn { background: #ff4757; border-radius: 50%; width: 180px; height: 180px; font-size: 3.5rem; border: 8px solid var(--border-color); box-shadow: 0 15px 0 #8b0000, 0 20px 20px rgba(0,0,0,0.5); transition: all 0.1s; display: block; margin: 2rem auto; text-shadow: 3px 3px 0 #000; color: #fff;}
+        body:not(.no-anim) .buzzer-btn:active:not(:disabled) { transform: translateY(15px); box-shadow: 0 0 0 #8b0000, 0 5px 10px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body class="no-sound">
 
     <h1 class="main-title">ANIME PARTY</h1>
-    <div class="subtitle">วาไรตี้เกมโชว์ - Monochrome Edition</div>
+    <div class="subtitle">วาไรตี้เกมโชว์ - Tournament Edition</div>
 
     <div id="screen-profile" class="screen active">
         <button class="settings-btn" onclick="openModal('modal-settings')" title="ตั้งค่าระบบ">⚙️</button>
-        <h2 style="text-align: center; margin-bottom: 1.5rem;">สร้างโปรไฟล์</h2>
+        <h2 style="text-align: center; margin-bottom: 1.5rem; font-size: 2.5rem;">สร้างโปรไฟล์</h2>
         <div class="profile-preview">
             <img id="my-avatar-img" class="avatar-img" src="" alt="Avatar">
-            <button style="background: var(--text-main); color: var(--panel-bg); font-size: 0.8rem; padding: 0.4rem 1rem; border-radius: 20px; box-shadow: none;" onclick="generateRandomAvatar()">🎲 สุ่มรูปใหม่</button>
+            <button style="background: var(--text-main); color: var(--panel-bg); font-size: 1rem; padding: 0.5rem 1.5rem; border-radius: 20px; box-shadow: none;" onclick="generateRandomAvatar()">🎲 สุ่มรูปใหม่</button>
         </div>
         <div class="input-group">
             <label>ตั้งชื่อสุดเท่ของคุณ</label>
             <input type="text" id="my-name" placeholder="ใส่ชื่อ..." maxlength="15">
         </div>
-        <button class="btn-primary" onclick="saveProfileAndGoToJoin()">เริ่มลุย! 🚀</button>
+        <button class="btn-primary" style="width: 100%; font-size: 1.5rem; padding: 1rem;" onclick="saveProfileAndGoToJoin()">เริ่มลุย! 🚀</button>
     </div>
 
     <div id="screen-join" class="screen">
-        <h2 style="text-align: center; margin-bottom: 1.5rem;">เข้าร่วมแก๊ง</h2>
+        <h2 style="text-align: center; margin-bottom: 1.5rem; font-size: 2.5rem;">เข้าร่วมแก๊ง</h2>
         <div class="input-group">
             <label>รหัสห้อง (Room ID)</label>
             <input type="text" id="room-input" placeholder="เช่น anime123">
@@ -260,18 +251,18 @@
                 <option value="admin">👁️ แอดมิน (คุมเกม/ชี้ขาด ไม่เล่น)</option>
             </select>
         </div>
-        <button class="btn-primary" onclick="joinRoom()">บุกเข้าห้อง! 🚪</button>
+        <button class="btn-primary" style="width: 100%; font-size: 1.5rem; padding: 1rem;" onclick="joinRoom()">บุกเข้าห้อง! 🚪</button>
         <button style="width: 100%; margin-top: 1rem; background: var(--bg-color); color: var(--text-main);" onclick="switchScreen('screen-profile')">⬅ กลับหน้าแรก</button>
     </div>
 
     <div id="screen-lobby" class="screen">
         <div class="header-bar">
-            <div style="font-size: 1.2rem; font-weight: 800;">Room: <strong id="lobby-room-id" style="color: var(--accent);"></strong></div>
-            <button class="btn-danger" style="padding: 0.4rem 0.8rem; font-size: 0.9rem;" onclick="leaveRoom()">หนีออกห้อง</button>
+            <div style="font-size: 1.5rem; font-weight: 900;">Room: <strong id="lobby-room-id" style="color: var(--accent);"></strong></div>
+            <button class="btn-danger" style="padding: 0.5rem 1rem; font-size: 1.2rem;" onclick="leaveRoom()">หนีออกห้อง</button>
         </div>
 
-        <h3>ผู้เล่นทั้งหมด (<span id="player-count">0</span>)</h3>
-        <div id="team-selector" style="margin-top: 1rem; display: flex; gap: 1rem;">
+        <h3 style="font-size: 1.8rem; text-align: center;">ผู้เล่นทั้งหมด (<span id="player-count">0</span>)</h3>
+        <div id="team-selector" style="margin-top: 1.5rem; display: flex; justify-content: center; gap: 1rem;">
             <button class="btn-a" onclick="changeMyTeam('A')">🔴 ทีมแดง</button>
             <button class="btn-b" onclick="changeMyTeam('B')">🔵 ทีมฟ้า</button>
         </div>
@@ -279,64 +270,41 @@
         <div class="players-grid" id="players-list-lobby"></div>
 
         <div id="host-lobby-panel" class="host-panel" style="display: none;">
-            <h2 style="text-align: center; margin-bottom: 1rem;">👑 แผงควบคุม</h2>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <h2 style="text-align: center; margin-bottom: 1.5rem; color: var(--text-main); font-size: 2rem;">👑 แผงควบคุม (Game Master)</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
                 <button class="btn-host" onclick="startGame('game1')">1. ทายใจทีมลับ</button>
-                <button class="btn-host" onclick="startGame('game2', 'host')">2. ฉันคือใคร (แอดมิน)</button>
+                <button class="btn-host" onclick="startGame('game2', 'host')">2. ฉันคือใคร (GM ใบ้)</button>
                 <button class="btn-host" onclick="startGame('game3')">3. ทาย OP/ED</button>
                 <button class="btn-success" onclick="startGame('game4')">⭐ 4. Tier List</button>
             </div>
         </div>
         
-        <div style="margin-top: 2rem; padding: 1.5rem; background: var(--panel-bg); border: var(--border-heavy); box-shadow: var(--shadow-heavy); border-radius: 16px; text-align: center;">
-            <h2>🎭 โหมดแปะหน้าผาก</h2>
-            <p style="font-size: 1rem; margin-bottom: 1rem; color: var(--text-main);">สุ่มรูปแปะหัวเพื่อน ให้ถามกันเอง!</p>
-            <button class="btn-primary" style="font-size: 1.2rem;" onclick="startGame('game2', 'headband')">เริ่มเกมแปะหัว! 🤪</button>
+        <div style="margin-top: 2.5rem; padding: 2rem; background: var(--panel-bg); border: var(--border-heavy); box-shadow: var(--shadow-heavy); border-radius: 20px; text-align: center;">
+            <h2 style="font-size: 2.5rem;">🎭 โหมดแปะหน้าผาก (ทัวร์นาเมนต์)</h2>
+            <p style="font-size: 1.2rem; margin-bottom: 1.5rem; color: var(--text-main); font-weight: 700;">ระบบจะสุ่มรูปแปะหัวเพื่อน ให้ผลัดกันถามทีละคน!</p>
+            <button class="btn-primary" style="font-size: 1.5rem; padding: 1rem 3rem;" onclick="startGame('game2', 'headband')">เริ่มเล่นโหมดทัวร์นาเมนต์! ⚔️</button>
         </div>
     </div>
 
     <div id="screen-game1" class="screen">
-        <div class="header-bar">
-            <h2>ทายใจทีมลับ</h2>
-            <button class="btn-danger btn-return-lobby" style="padding: 0.4rem 0.8rem;" onclick="returnToLobby()">⬅ กลับ Lobby</button>
-        </div>
-
+        <div class="header-bar"><h2>ทายใจทีมลับ</h2><button class="btn-danger btn-return-lobby" onclick="returnToLobby()">⬅ กลับ Lobby</button></div>
         <div class="teams-container" style="display: flex; gap: 1rem; flex-wrap: wrap;">
-            <div class="player-card" style="flex: 1; border-color: var(--team-a);">
-                <h2 style="color: var(--team-a); margin-bottom: 1rem;">Team A 🔴</h2>
-                <div id="g1-search-A" class="search-container" style="display: none;">
-                    <input type="text" id="g1-input-A" placeholder="ค้นชื่อเรื่อง (พิมพ์ไทยได้)..." oninput="debounceSearch('g1', 'anime', 'A')">
-                    <div class="search-results" id="g1-results-A"></div>
-                </div>
-                <div class="card-display" id="g1-card-A" style="width: 100%;">
-                    <h3 id="g1-status-A">ยังไม่เลือก</h3>
-                    <img id="g1-img-A" src="" style="width:100%; border-radius: 8px; border: var(--border-heavy); display:none;">
-                    <h3 id="g1-title-A" style="display:none; margin-top: 1rem;">Title</h3>
-                    <div class="card-locked" id="g1-locked-A" style="position: absolute; inset:0; background: rgba(0,0,0,0.8); color: white; display:flex; align-items:center; justify-content:center; display:none; border-radius:12px;">🔒 ล็อกแล้ว</div>
-                </div>
-            </div>
-
-            <div class="player-card" style="flex: 1; border-color: var(--team-b);">
-                <h2 style="color: var(--team-b); margin-bottom: 1rem;">Team B 🔵</h2>
-                <div id="g1-search-B" class="search-container" style="display: none;">
-                    <input type="text" id="g1-input-B" placeholder="ค้นชื่อเรื่อง (พิมพ์ไทยได้)..." oninput="debounceSearch('g1', 'anime', 'B')">
-                    <div class="search-results" id="g1-results-B"></div>
-                </div>
-                <div class="card-display" id="g1-card-B" style="width: 100%;">
-                    <h3 id="g1-status-B">ยังไม่เลือก</h3>
-                    <img id="g1-img-B" src="" style="width:100%; border-radius: 8px; border: var(--border-heavy); display:none;">
-                    <h3 id="g1-title-B" style="display:none; margin-top: 1rem;">Title</h3>
-                    <div class="card-locked" id="g1-locked-B" style="position: absolute; inset:0; background: rgba(0,0,0,0.8); color: white; display:flex; align-items:center; justify-content:center; display:none; border-radius:12px;">🔒 ล็อกแล้ว</div>
-                </div>
-            </div>
+            <div class="player-card" style="flex: 1; border-color: var(--team-a);"><h2 style="color: var(--team-a);">Team A 🔴</h2><div id="g1-search-A" class="search-container" style="display:none;"><input type="text" id="g1-input-A" placeholder="ค้นหา..." oninput="debounceSearch('g1', 'anime', 'A')"><div class="search-results" id="g1-results-A"></div></div><div class="card-display" id="g1-card-A"><h3 id="g1-status-A">ยังไม่เลือก</h3><img id="g1-img-A" src="" style="width:100%; border-radius: 8px; border: var(--border-heavy); display:none;"><h3 id="g1-title-A" style="display:none; margin-top: 1rem;">Title</h3><div class="card-locked" id="g1-locked-A" style="position: absolute; inset:0; background: rgba(0,0,0,0.8); color: white; display:flex; align-items:center; justify-content:center; display:none; border-radius:12px;">🔒 ล็อกแล้ว</div></div></div>
+            <div class="player-card" style="flex: 1; border-color: var(--team-b);"><h2 style="color: var(--team-b);">Team B 🔵</h2><div id="g1-search-B" class="search-container" style="display:none;"><input type="text" id="g1-input-B" placeholder="ค้นหา..." oninput="debounceSearch('g1', 'anime', 'B')"><div class="search-results" id="g1-results-B"></div></div><div class="card-display" id="g1-card-B"><h3 id="g1-status-B">ยังไม่เลือก</h3><img id="g1-img-B" src="" style="width:100%; border-radius: 8px; border: var(--border-heavy); display:none;"><h3 id="g1-title-B" style="display:none; margin-top: 1rem;">Title</h3><div class="card-locked" id="g1-locked-B" style="position: absolute; inset:0; background: rgba(0,0,0,0.8); color: white; display:flex; align-items:center; justify-content:center; display:none; border-radius:12px;">🔒 ล็อกแล้ว</div></div></div>
         </div>
         <button id="g1-btn-reveal" class="btn-reveal" style="display:none;" onclick="hostRevealGame('game1')">🎉 กดเฉลยคำตอบ!</button>
     </div>
 
     <div id="screen-game2" class="screen">
         <div class="header-bar">
-            <h2 id="g2-title-mode" style="font-size: 2rem;">ฉันเป็นใคร?</h2>
-            <button class="btn-danger btn-return-lobby" style="padding: 0.4rem 0.8rem;" onclick="returnToLobby()">⬅ กลับ Lobby</button>
+            <h2 id="g2-title-mode" style="font-size: 2.5rem;">ฉันเป็นใคร?</h2>
+            <button class="btn-danger btn-return-lobby" style="padding: 0.5rem 1rem; font-size: 1.2rem;" onclick="returnToLobby()">⬅ กลับ Lobby</button>
+        </div>
+
+        <div id="g2-turn-controls" class="host-panel" style="display:none; text-align:center;">
+            <h2 style="color: var(--text-main); margin-bottom: 1rem;">🎮 จัดการทัวร์นาเมนต์</h2>
+            <p style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem; color: var(--accent);" id="g2-turn-status-text">กดปุ่มเริ่มเทิร์น เพื่อให้ผู้เล่นผลัดกันถาม</p>
+            <button class="btn-host" style="font-size: 1.5rem; padding: 1rem 3rem;" onclick="nextTurnG2()">⏭️ Next Turn (ให้คนต่อไปถาม)</button>
         </div>
 
         <div id="g2-host-controls" class="host-panel" style="display:none;">
@@ -352,227 +320,190 @@
             <button id="g2-btn-reveal-host" class="btn-reveal" onclick="hostRevealGame('game2')">🎉 ผู้คุม: กดเฉลย!</button>
         </div>
 
-        <div id="g2-headband-setup" style="display:none; text-align: center; margin-bottom: 2rem; background: var(--panel-bg); padding: 1.5rem; border: var(--border-heavy); box-shadow: var(--shadow-heavy); border-radius: 16px;">
-            <h2 style="font-size: 1.5rem;">🎯 เลือกล็อกหัวให้: <span id="g2-target-name" style="color: var(--accent); font-size: 2rem; display: block; margin: 0.5rem 0;"></span></h2>
+        <div id="g2-headband-setup" style="display:none; text-align: center; margin-bottom: 2rem; background: var(--panel-bg); padding: 2rem; border: var(--border-heavy); box-shadow: var(--shadow-heavy); border-radius: 20px;">
+            <h2 style="font-size: 2rem;">🎯 เลือกล็อกหัวให้: <span id="g2-target-name" style="color: var(--accent); font-size: 3rem; display: block; margin: 1rem 0;"></span></h2>
             
             <div class="radio-group" id="g2-hb-radio">
                 <label><input type="radio" name="g2-hb-type" value="character" checked> ค้นหาชื่อตัวละคร</label>
                 <label><input type="radio" name="g2-hb-type" value="anime"> ค้นจากชื่อเรื่อง (ไทยได้)</label>
             </div>
 
-            <div class="search-container" style="max-width: 500px; margin: 0.5rem auto;">
+            <div class="search-container" style="max-width: 600px; margin: 1rem auto;">
                 <input type="text" id="g2-hb-input" placeholder="พิมพ์ค้นหา..." oninput="debounceSearchG2('g2_hb')">
                 <div class="search-results" id="g2-hb-results"></div>
             </div>
-            <h3 id="g2-hb-status" style="color: var(--accent);">กำลังรอเพื่อนเลือกให้เสร็จ...</h3>
+            <h2 id="g2-hb-status" style="color: var(--accent); margin-top: 1rem;">กำลังรอเพื่อนเลือกให้เสร็จ...</h2>
         </div>
 
         <div id="g2-playing-area" style="display:none;">
             <div style="text-align: center; margin-bottom: 2rem;" id="g2-player-actions">
-                <button id="g2-btn-guess" class="btn-primary" style="font-size: 1.5rem; padding: 0.8rem 2rem;" onclick="openGuessModal()">🙋‍♂️ ขอตอบ!</button>
-                <div id="my-jail-timer" style="color: #fff; background: #ff4757; border: 3px solid var(--border-color); border-radius: 8px; font-weight: 800; font-size: 1.2rem; margin-top: 1rem; display: inline-block; padding: 0.5rem 1.5rem; display: none;">ติดคุกอยู่: <span id="jail-sec">30</span> วิ</div>
+                <button id="g2-btn-guess" class="btn-primary" style="font-size: 2rem; padding: 1.2rem 4rem;" onclick="openGuessModal()">🙋‍♂️ ขอทายชื่อตัวเอง!</button>
             </div>
             <div class="players-grid" id="g2-headband-grid"></div>
         </div>
 
-        <div id="g2-host-display" class="card-display" style="max-width: 400px; margin: 2rem auto; display: none;">
-            <img id="g2-img-host" src="" style="max-width: 100%; border-radius: 8px; border: var(--border-heavy); display: none;">
-            <h2 id="g2-title-host" style="display: none; margin-top: 1rem;">Title</h2>
+        <div id="g2-host-display" class="card-display" style="max-width: 500px; margin: 2rem auto; display: none;">
+            <img id="g2-img-host" src="" style="max-width: 100%; border-radius: 12px; border: var(--border-heavy); display: none;">
+            <h2 id="g2-title-host" style="display: none; margin-top: 1rem; font-size: 2rem;">Title</h2>
             <div id="g2-locked-host" style="position: absolute; top:0; bottom:0; left:0; right:0; background: var(--bg-color); color: var(--text-main); display: flex; align-items:center; justify-content:center; flex-direction: column;">
-                <span style="font-size: 4rem;">❓</span><h2>เริ่มถามแอดมินได้เลย</h2>
+                <span style="font-size: 5rem;">❓</span><h2>เริ่มถามแอดมินได้เลย</h2>
             </div>
         </div>
     </div>
 
     <div id="screen-game3" class="screen">
-        <div class="header-bar">
-            <h2 style="font-size: 2rem;">ทายเพลง OP/ED</h2>
-            <button class="btn-danger btn-return-lobby" style="padding: 0.4rem 0.8rem;" onclick="returnToLobby()">⬅ กลับ Lobby</button>
-        </div>
-
+        <div class="header-bar"><h2 style="font-size: 2rem;">ทายเพลง OP/ED</h2><button class="btn-danger btn-return-lobby" onclick="returnToLobby()">⬅ กลับ</button></div>
         <div id="g3-host-controls" class="host-panel" style="display:none;">
             <div id="g3-host-controls-select">
-                <h3>🎬 เลือกลิงก์วิดีโอ</h3>
+                <h3>🎬 เลือกลิงก์วิดีโอแบบ Official (ฝังเว็บได้ชัวร์)</h3>
                 <div class="video-list">
-                    <button class="video-btn" onclick="setOpVideo('EIVgSuuUT8Q', 'Naruto Shippuden OP 3', true)">Naruto</button>
-                    <button class="video-btn" onclick="setOpVideo('7aMOurgDB-o', 'Tokyo Ghoul OP 1', true)">Tokyo Ghoul</button>
-                    <button class="video-btn" onclick="setOpVideo('mpe2OEQfLMs', 'AOT OP 1', true)">AOT</button>
-                    <button class="video-btn" onclick="setOpVideo('fXG_u4T_Mss', 'Evangelion OP', true)">Evangelion</button>
+                    <button class="video-btn" onclick="setOpVideo('ZRtdQ81jPUQ', 'Oshi no Ko (Idol)', true)">Oshi no Ko</button>
+                    <button class="video-btn" onclick="setOpVideo('210R0ozfZcg', 'Mashle (Bling-Bang-Bang-Born)', true)">Mashle</button>
+                    <button class="video-btn" onclick="setOpVideo('5yb2N3pn2ry', 'Jujutsu Kaisen (SPECIALZ)', true)">Jujutsu Kaisen</button>
+                    <button class="video-btn" onclick="setOpVideo('2S4qGKmzBJE', 'AOT (The Rumbling)', true)">AOT</button>
+                    <button class="video-btn" onclick="setOpVideo('tGQQGA3A8gQ', 'Demon Slayer (Gurenge)', true)">Demon Slayer</button>
+                    <button class="video-btn" onclick="setOpVideo('WGmksAQZqCs', 'Frieren (Yuusha)', true)">Frieren</button>
+                    <button class="video-btn" onclick="setOpVideo('fXG_u4T_Mss', 'Evangelion', true)">Evangelion</button>
+                    <button class="video-btn" onclick="setOpVideo('dQw4w9WgXcQ', 'Rickroll (หลอกปั่น)', true)">Rickroll (หลอก)</button>
                 </div>
-                <div class="input-group" style="margin-top: 1rem;">
-                    <input type="text" id="g3-custom-id" placeholder="ใส่ลิงก์ YouTube หรือไฟล์ .mp4">
-                    <input type="text" id="g3-custom-title" placeholder="ชื่อเรื่องเฉลย" style="margin-top: 0.5rem;">
-                    <button class="btn-host" style="margin-top: 0.5rem;" onclick="setCustomOpVideo()">เลือกลิงก์นี้</button>
-                </div>
+                <div class="input-group" style="margin-top: 1.5rem;"><input type="text" id="g3-custom-id" placeholder="ลิงก์ YouTube Custom"><input type="text" id="g3-custom-title" placeholder="เฉลยชื่อเพลง/เรื่อง" style="margin-top: 0.5rem;"><button class="btn-host" style="margin-top: 0.5rem;" onclick="setCustomOpVideo()">เลือก</button></div>
             </div>
-
-            <div id="g3-host-staging" style="display:none; margin-top: 1rem; padding: 1.5rem; background: var(--panel-bg); border: var(--border-heavy); box-shadow: var(--shadow-heavy); border-radius: 12px;">
-                <h3 style="color: var(--accent); text-align: center; margin-bottom: 1rem;">⚙️ ทดสอบวิดีโอ</h3>
-                <div style="width: 100%; height: 200px; background: #000; border-radius: 8px; margin-bottom: 1rem; overflow: hidden; border: 2px solid var(--border-color);">
-                    <iframe id="g3-preview-iframe" width="100%" height="100%" src="" frameborder="0" allow="autoplay" style="display:none;"></iframe>
-                    <video id="g3-preview-video" width="100%" height="100%" controls style="display:none; object-fit: cover;"></video>
-                </div>
-                <div style="display: flex; gap: 1rem;">
-                    <button class="btn-success" style="flex: 2; font-size: 1.2rem;" onclick="hostPlayVideo()">▶️ ฉายให้ทุกคนดู!</button>
-                    <button class="btn-danger" style="flex: 1;" onclick="hostCancelVideo()">ยกเลิก</button>
-                </div>
+            <div id="g3-host-staging" style="display:none; margin-top: 1rem; padding: 1.5rem; background: var(--panel-bg); border: var(--border-heavy); border-radius: 12px;">
+                <h3 style="color: var(--accent); text-align: center;">⚙️ ทดสอบวิดีโอ</h3>
+                <div style="width: 100%; height: 200px; background: #000; border-radius: 8px; margin-bottom: 1rem; overflow: hidden; border: 2px solid #000;"><iframe id="g3-preview-iframe" width="100%" height="100%" src="" frameborder="0" allow="autoplay" style="display:none;"></iframe><video id="g3-preview-video" width="100%" height="100%" controls style="display:none; object-fit: cover;"></video></div>
+                <div style="display: flex; gap: 1rem;"><button class="btn-success" style="flex: 2;" onclick="hostPlayVideo()">▶️ ฉายให้ทุกคนดู!</button><button class="btn-danger" style="flex: 1;" onclick="hostCancelVideo()">ยกเลิก</button></div>
             </div>
-            
-            <div id="g3-judge-panel" style="display:none; margin-top: 1.5rem; padding: 1.5rem; background: var(--panel-bg); border: var(--border-heavy); box-shadow: var(--shadow-heavy); border-radius: 12px;">
-                <h3 style="color: var(--team-a); text-align: center; font-size: 1.8rem;" id="g3-who-buzzed-host">มีคนกดตอบ!</h3>
-                <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1rem;">
-                    <button class="btn-success" onclick="hostJudgeBuzzer(true)">✅ ถูก (เฉลย)</button>
-                    <button class="btn-danger" onclick="hostJudgeBuzzer(false)">❌ ผิด (แย่งต่อ)</button>
-                </div>
+            <div id="g3-judge-panel" style="display:none; margin-top: 1.5rem; padding: 1.5rem; background: var(--panel-bg); border: var(--border-heavy); border-radius: 12px;">
+                <h3 style="color: var(--team-a); text-align: center; font-size: 2rem;" id="g3-who-buzzed-host">มีคนกดตอบ!</h3>
+                <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1rem;"><button class="btn-success" style="font-size: 1.5rem;" onclick="hostJudgeBuzzer(true)">✅ ถูก (เฉลย)</button><button class="btn-danger" style="font-size: 1.5rem;" onclick="hostJudgeBuzzer(false)">❌ ผิด (แย่งต่อ)</button></div>
             </div>
             <button id="g3-btn-reveal" class="btn-reveal" style="display:none;" onclick="hostRevealGame('game3')">🎉 ข้ามไปเฉลยเลย</button>
         </div>
-
-        <div class="card-display" style="max-width: 800px; margin: 1rem auto; padding: 0;">
-            <h3 id="g3-status" style="margin: 2rem; font-size: 1.5rem;">รอแอดมินเปิดแผ่น...</h3>
-            <div id="g3-video-container" style="width: 100%; height: 400px; display: none; position: relative; background: #000; border-radius: 12px; overflow: hidden;">
-                <div style="position:absolute; top:0; left:0; right:0; bottom:0; z-index: 5;"></div>
-                <iframe id="g3-iframe" width="100%" height="100%" src="" frameborder="0" allow="autoplay; encrypted-media" style="display: none;"></iframe>
-                <video id="g3-html-video" width="100%" height="100%" autoplay loop style="display: none; object-fit: cover;"></video>
-            </div>
-            <div id="g3-answer-display" style="position: absolute; bottom: 0; left: 0; right: 0; background: var(--accent); border-top: var(--border-heavy); padding: 1.5rem; display: none; z-index: 10;">
-                <p style="color:#000; margin:0; font-weight:800;">คำตอบคือ:</p>
-                <h1 id="g3-title" style="color: #000; margin:0; font-size: 2.5rem; text-shadow: none;">Title</h1>
-            </div>
+        <div class="card-display" style="max-width: 900px; margin: 1rem auto; padding: 0;">
+            <h3 id="g3-status" style="margin: 2rem; font-size: 2rem;">รอแอดมินเปิดแผ่น...</h3>
+            <div id="g3-video-container" style="width: 100%; height: 500px; display: none; position: relative; background: #000; border-radius: 12px; overflow: hidden;"><div style="position:absolute; top:0; left:0; right:0; bottom:0; z-index: 5;"></div><iframe id="g3-iframe" width="100%" height="100%" src="" frameborder="0" allow="autoplay; encrypted-media" style="display: none;"></iframe><video id="g3-html-video" width="100%" height="100%" autoplay loop style="display: none; object-fit: cover;"></video></div>
+            <div id="g3-answer-display" style="position: absolute; bottom: 0; left: 0; right: 0; background: var(--accent); border-top: var(--border-heavy); padding: 1.5rem; display: none; z-index: 10;"><p style="color:#000; margin:0; font-weight:800; font-size: 1.5rem;">คำตอบคือ:</p><h1 id="g3-title" style="color: #000; margin:0; font-size: 3rem;">Title</h1></div>
         </div>
-
         <div id="g3-player-buzzer-area" style="display:none; text-align: center; margin-top: 1.5rem;">
-            <h3 id="g3-buzzer-status" style="font-size: 1.5rem; color: var(--accent); margin-bottom: 0.5rem; height: 35px;"></h3>
-            <button id="btn-buzz" class="btn-buzzer" onclick="buzzIn()">ตบ!</button>
+            <h3 id="g3-buzzer-status" style="font-size: 2rem; color: var(--accent); margin-bottom: 0.5rem; height: 35px;"></h3><button id="btn-buzz" class="buzzer-btn" onclick="buzzIn()">ตบ!</button>
         </div>
     </div>
 
     <div id="screen-game4" class="screen">
-        <div class="header-bar">
-            <h2 style="font-size: 2rem;">จัด Tier List ร่วมสาบาน</h2>
-            <button class="btn-danger btn-return-lobby" style="padding: 0.4rem 0.8rem;" onclick="returnToLobby()">⬅ กลับ Lobby</button>
-        </div>
-
-        <div style="background: var(--panel-bg); border: var(--border-heavy); box-shadow: var(--shadow-heavy); padding: 1.5rem; border-radius: 16px; margin-bottom: 1.5rem;">
+        <div class="header-bar"><h2 style="font-size: 2rem;">จัด Tier List</h2><button class="btn-danger btn-return-lobby" onclick="returnToLobby()">⬅ กลับ</button></div>
+        <div style="background: var(--panel-bg); border: var(--border-heavy); padding: 1.5rem; border-radius: 16px; margin-bottom: 1.5rem;">
             <div style="display: flex; flex-wrap: wrap; gap: 1.5rem;">
-                <div style="flex: 1; min-width: 250px;">
+                <div style="flex: 1; min-width: 350px;">
                     <h3 style="margin-bottom: 0.8rem; border-bottom: 2px dashed var(--border-color); padding-bottom: 0.5rem;">➕ กองทัพการ์ตูนฮิต</h3>
-                    <div class="preset-grid">
+                    <div class="preset-grid" style="max-height: 250px;">
                         <div class="preset-btn" onclick="addPresetToTier('โดราเอมอน', 'https://upload.wikimedia.org/wikipedia/en/c/c8/Doraemon_volume_1_cover.jpg')">โดราเอมอน</div>
                         <div class="preset-btn" onclick="addPresetToTier('ชินจัง', 'https://upload.wikimedia.org/wikipedia/en/e/e0/Crayon_Shin-chan.png')">ชินจัง</div>
                         <div class="preset-btn" onclick="addPresetToTier('นารูโตะ', 'https://cdn.myanimelist.net/images/anime/13/17405.jpg')">Naruto</div>
                         <div class="preset-btn" onclick="addPresetToTier('วันพีซ', 'https://cdn.myanimelist.net/images/anime/6/73245.jpg')">One Piece</div>
                         <div class="preset-btn" onclick="addPresetToTier('โคนัน', 'https://upload.wikimedia.org/wikipedia/en/c/c6/Case_Closed_Volume_1.jpg')">โคนัน</div>
                         <div class="preset-btn" onclick="addPresetToTier('ดาบพิฆาตอสูร', 'https://cdn.myanimelist.net/images/anime/1286/99889.jpg')">ดาบพิฆาตอสูร</div>
-                        <div class="preset-btn" onclick="addPresetToTier('มหาเวทย์ผนึกมาร', 'https://cdn.myanimelist.net/images/anime/1171/109222.jpg')">มหาเวทย์ผนึกมาร</div>
-                        <div class="preset-btn" onclick="addPresetToTier('ผ่าพิภพไททัน', 'https://cdn.myanimelist.net/images/anime/10/47347.jpg')">ไททัน</div>
+                        <div class="preset-btn" onclick="addPresetToTier('มหาเวทย์ผนึกมาร', 'https://cdn.myanimelist.net/images/anime/1171/109222.jpg')">JJK</div>
+                        <div class="preset-btn" onclick="addPresetToTier('ไททัน', 'https://cdn.myanimelist.net/images/anime/10/47347.jpg')">AOT</div>
                         <div class="preset-btn" onclick="addPresetToTier('สปาย แฟมิลี่', 'https://cdn.myanimelist.net/images/anime/1441/122795.jpg')">Spy x Family</div>
                         <div class="preset-btn" onclick="addPresetToTier('บลีช', 'https://cdn.myanimelist.net/images/anime/3/40451.jpg')">Bleach</div>
+                        <div class="preset-btn" onclick="addPresetToTier('ฟรีเรน', 'https://cdn.myanimelist.net/images/anime/1015/138006.jpg')">Frieren</div>
+                        <div class="preset-btn" onclick="addPresetToTier('เกิดใหม่เป็นสไลม์', 'https://cdn.myanimelist.net/images/anime/1171/109222.jpg')">Slime</div>
+                        <div class="preset-btn" onclick="addPresetToTier('เกิดใหม่ลูกโอชิ', 'https://cdn.myanimelist.net/images/anime/1812/134736.jpg')">Oshi no Ko</div>
+                        <div class="preset-btn" onclick="addPresetToTier('โจโจ้', 'https://cdn.myanimelist.net/images/anime/3/40409.jpg')">Jojo</div>
+                        <div class="preset-btn" onclick="addPresetToTier('ไฮคิว', 'https://cdn.myanimelist.net/images/anime/7/76014.jpg')">Haikyuu</div>
+                        <div class="preset-btn" onclick="addPresetToTier('มายฮีโร่', 'https://cdn.myanimelist.net/images/anime/10/78745.jpg')">MHA</div>
+                        <div class="preset-btn" onclick="addPresetToTier('กินทามะ', 'https://cdn.myanimelist.net/images/anime/10/73274.jpg')">Gintama</div>
+                        <div class="preset-btn" onclick="addPresetToTier('แฟรี่เทล', 'https://cdn.myanimelist.net/images/anime/5/18179.jpg')">Fairy Tail</div>
+                        <div class="preset-btn" onclick="addPresetToTier('มูโชคุก', 'https://cdn.myanimelist.net/images/anime/1530/117776.jpg')">Mushoku</div>
+                        <div class="preset-btn" onclick="addPresetToTier('บลูล็อค', 'https://cdn.myanimelist.net/images/anime/1258/126929.jpg')">Blue Lock</div>
                     </div>
                 </div>
                 <div style="flex: 1; min-width: 250px;">
-                    <h3 style="margin-bottom: 0.8rem; border-bottom: 2px dashed var(--border-color); padding-bottom: 0.5rem;">🔍 ค้นหาเรื่องอื่น (พิมพ์ไทยได้)</h3>
-                    <div class="search-container">
-                        <input type="text" id="g4-search-input" placeholder="พิมพ์ชื่อเรื่อง..." oninput="debounceSearch('g4', 'anime')">
-                        <div class="search-results" id="g4-search-results"></div>
-                    </div>
+                    <h3 style="margin-bottom: 0.8rem; border-bottom: 2px dashed var(--border-color); padding-bottom: 0.5rem;">🔍 ค้นหา (พิมพ์ไทยได้)</h3>
+                    <div class="search-container"><input type="text" id="g4-search-input" placeholder="ค้นหา..." oninput="debounceSearch('g4', 'anime')"><div class="search-results" id="g4-search-results"></div></div>
                 </div>
             </div>
         </div>
-
         <div style="margin-top: 1.5rem; display: flex; justify-content: space-between; align-items: center;" id="g4-host-actions">
-            <div>
-                <button class="btn-success" style="width: auto; font-size: 1rem;" onclick="openAddTierModal()">+ เพิ่ม Tier</button>
-                <button class="btn-danger" style="width: auto; margin-left: 1rem; font-size: 1rem;" onclick="clearTierBoard()">🗑️ ล้างกระดาน</button>
-            </div>
-            <button class="btn-host" style="width: auto; font-size: 1.2rem; display: flex; align-items: center; gap: 8px;" onclick="captureTierList()">📸 แคปภาพกระดาน</button>
+            <div><button class="btn-success" onclick="openAddTierModal()">+ เพิ่ม Tier</button><button class="btn-danger" style="margin-left: 1rem;" onclick="clearTierBoard()">🗑️ ล้างกระดาน</button></div>
+            <button class="btn-host" onclick="captureTierList()">📸 แคปภาพกระดาน</button>
         </div>
-
         <div class="tier-board" id="g4-tier-board" style="padding: 15px; background: var(--bg-color); border-radius: 16px;"></div>
-
-        <h3 style="margin-top: 2rem; text-align: center;">👇 กองกลาง (ลากขึ้นไปใส่ได้เลย) 👇</h3>
+        <h3 style="margin-top: 2rem; text-align: center;">👇 กองกลาง (ลากขึ้นไปใส่) 👇</h3>
         <div class="tier-pool" id="g4-tier-pool" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'pool', 0)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)"></div>
     </div>
 
 
     <div id="modal-settings" class="modal-overlay">
         <div class="modal-content">
-            <h2>ตั้งค่าระบบ</h2>
-            
-            <div class="toggle-switch" style="margin-top: 1.5rem;">
-                <span style="font-weight: bold; font-size: 1.2rem;">🔊 เสียงประกอบ (SFX)</span>
-                <input type="checkbox" id="set-sound" style="width:25px; height:25px;" onchange="saveSettings()">
-            </div>
-            <div class="toggle-switch">
-                <span style="font-weight: bold; font-size: 1.2rem;">✨ แอนิเมชันเคลื่อนไหว</span>
-                <input type="checkbox" id="set-anim" style="width:25px; height:25px;" onchange="saveSettings()">
-            </div>
-            <div class="toggle-switch">
-                <span style="font-weight: bold; font-size: 1.2rem;">🌟 ลายจุดพื้นหลัง</span>
-                <input type="checkbox" id="set-vfx" style="width:25px; height:25px;" onchange="saveSettings()">
-            </div>
-            <div class="toggle-switch" style="margin-top: 1.5rem; border-bottom: none; justify-content: center;">
-                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 1.2rem; font-weight: bold;">
-                    <span>สว่าง (Light)</span>
-                    <input type="checkbox" id="set-theme" style="width:25px; height:25px;" onchange="toggleTheme()">
-                    <span>มืด (Dark)</span>
+            <h2 style="font-size: 2rem; margin-bottom: 1.5rem;">ตั้งค่าระบบ</h2>
+            <div class="toggle-switch"><span style="font-weight: bold; font-size: 1.5rem;">🔊 เสียง & ดนตรี (SFX)</span><input type="checkbox" id="set-sound" style="width:30px; height:30px;" onchange="saveSettings()"></div>
+            <div class="toggle-switch"><span style="font-weight: bold; font-size: 1.5rem;">✨ แอนิเมชัน</span><input type="checkbox" id="set-anim" style="width:30px; height:30px;" onchange="saveSettings()"></div>
+            <div class="toggle-switch"><span style="font-weight: bold; font-size: 1.5rem;">🌟 ลายพื้นหลัง</span><input type="checkbox" id="set-vfx" style="width:30px; height:30px;" onchange="saveSettings()"></div>
+            <div class="toggle-switch" style="justify-content: center; border-bottom: none; margin-top: 2rem;">
+                <label style="display: flex; align-items: center; gap: 15px; cursor: pointer; font-size: 1.5rem; font-weight: 900;">
+                    <span>สว่าง (Light)</span><input type="checkbox" id="set-theme" style="width:30px; height:30px;" onchange="toggleTheme()"><span>มืด (Dark)</span>
                 </label>
             </div>
-
-            <button class="btn-primary" style="margin-top: 2rem;" onclick="closeModal('modal-settings')">ปิดหน้าต่าง</button>
+            <button class="btn-primary" style="margin-top: 2.5rem; font-size: 1.5rem; padding: 1rem 3rem;" onclick="closeModal('modal-settings')">บันทึก & ปิด</button>
         </div>
     </div>
 
     <div id="modal-make-guess" class="modal-overlay">
-        <div class="modal-content">
-            <h2>ทายชื่อตัวละคร!</h2>
-            <p style="color: var(--text-muted);">(ถ้าผิด ติดคุก 30 วิ)</p>
-            <input type="text" id="guess-input" placeholder="พิมพ์คำตอบ..." style="margin-top: 1.5rem; text-align: center; font-size: 1.5rem;">
-            <div class="vote-buttons">
-                <button class="btn-primary" onclick="submitGuess()">ส่งคำตอบ!</button>
-                <button class="btn-danger" onclick="closeModal('modal-make-guess')">ยกเลิก</button>
+        <div class="modal-content" style="max-width: 800px;">
+            <h1 style="font-size: 3.5rem; color: var(--accent);">ทายชื่อตัวละคร!</h1>
+            <p style="font-size: 1.5rem; color: var(--text-muted);">(ระวังตอบผิดเสียเทิร์นนะจ๊ะ)</p>
+            <input type="text" id="guess-input" placeholder="ฉันคิดว่าฉันคือ..." style="margin-top: 2rem; text-align: center; font-size: 2rem; padding: 1.5rem;">
+            <div class="vote-buttons" style="margin-top: 3rem;">
+                <button class="btn-primary" style="font-size: 2rem; padding: 1rem 3rem;" onclick="submitGuess()">💥 ส่งคำตอบ!</button>
+                <button class="btn-danger" style="font-size: 2rem; padding: 1rem 2rem;" onclick="closeModal('modal-make-guess')">หนี</button>
             </div>
         </div>
     </div>
 
     <div id="modal-vote" class="modal-overlay">
-        <div class="modal-content">
-            <h1 style="color: var(--team-a); font-size: 2.5rem;">📢 ขอตอบ!</h1>
-            <h3 style="margin-top: 1rem;"><strong id="vote-who" style="background: var(--text-main); color: var(--panel-bg); padding: 2px 10px; border-radius: 8px;">???</strong> คิดว่าตัวเองคือ...</h3>
-            <h1 id="vote-what" style="color: var(--accent); margin: 1rem 0; font-size: 2.5rem;">???</h1>
+        <div class="modal-content" style="max-width: 800px;">
+            <h1 style="color: var(--team-a); font-size: 4rem; text-shadow: 2px 2px 0 var(--border-color);">📢 ขอตอบ!</h1>
+            <h2 style="margin-top: 1.5rem; font-size: 2rem;"><strong id="vote-who" style="background: var(--text-main); color: var(--panel-bg); padding: 5px 20px; border-radius: 12px; border: 3px solid var(--border-color);">???</strong> คิดว่าตัวเองคือ...</h2>
+            <h1 id="vote-what" style="color: var(--accent); margin: 2rem 0; font-size: 4.5rem; text-shadow: 3px 3px 0 var(--border-color);">???</h1>
             
-            <div id="vote-actions-admin" style="display:none; flex-direction:column; gap:10px;">
-                <h3 style="color: var(--admin-color);">คำตัดสินของแอดมิน!</h3>
-                <div class="vote-buttons" style="margin-top:0;">
-                    <button class="btn-success" onclick="adminDecide(true)">✅ ถูกต้อง!</button>
-                    <button class="btn-danger" onclick="adminDecide(false)">❌ ผิด!</button>
+            <div class="live-score" id="live-score-display" style="display:none;">
+                <div class="score-yes">✅ <span id="score-yes">0</span></div>
+                <div class="score-no">❌ <span id="score-no">0</span></div>
+            </div>
+
+            <div id="vote-actions-admin" style="display:none; flex-direction:column; gap:15px;">
+                <h2 style="color: var(--admin-color); font-size: 2rem;">👑 สิทธิ์ชี้ขาดของแอดมิน!</h2>
+                <div class="vote-buttons" style="margin-top:1rem;">
+                    <button class="btn-success" style="font-size: 2rem;" onclick="adminDecide(true)">✅ ถูกต้อง!</button>
+                    <button class="btn-danger" style="font-size: 2rem;" onclick="adminDecide(false)">❌ ผิด!</button>
                 </div>
             </div>
 
-            <div id="vote-actions-group" style="display:none; flex-direction:column; gap:10px;">
-                <h3>เพื่อนตอบถูกไหม?</h3>
-                <div class="vote-buttons" style="margin-top:0;">
-                    <button class="btn-success" onclick="castVote('yes')">✅ ถูก!</button>
-                    <button class="btn-danger" onclick="castVote('no')">❌ ผิด!</button>
+            <div id="vote-actions-group" style="display:none; flex-direction:column; gap:15px;">
+                <h2 style="font-size: 2rem;">เพื่อนตอบถูกไหม? ช่วยกันโหวต!</h2>
+                <div class="vote-buttons" style="margin-top:1rem;">
+                    <button class="btn-success" style="font-size: 2rem;" onclick="castVote('yes')">✅ ถูก!</button>
+                    <button class="btn-danger" style="font-size: 2rem;" onclick="castVote('no')">❌ ผิด!</button>
                 </div>
             </div>
 
-            <div id="vote-actions-waiting" style="display:none; padding:1rem; background: var(--bg-color); border: var(--border-heavy); border-radius: 12px; margin-top: 1rem;">
-                <h3 style="color: var(--text-muted);">⏳ รอคำตัดสิน...</h3>
+            <div id="vote-actions-waiting" style="display:none; padding:2rem; background: var(--bg-color); border: var(--border-heavy); border-radius: 16px; margin-top: 2rem;">
+                <h2 style="color: var(--text-main); font-size: 2rem;" id="vote-waiting-text">⏳ รอคำตัดสิน...</h2>
             </div>
         </div>
     </div>
 
     <div id="modal-winner" class="modal-overlay">
-        <div class="modal-content">
-            <h1 style="font-size: 5rem; margin: 0;">🎉</h1>
-            <h1 id="winner-name" style="color: var(--host-color); font-size: 3rem;">??? ชนะ!</h1>
-            <h3 style="margin-top: 1rem;">ตัวจริงคือ: <strong id="winner-char" style="color: var(--accent);">???</strong></h3>
-            <button class="btn-primary" style="margin-top: 1.5rem;" onclick="closeModal('modal-winner'); if(['host_player', 'admin'].includes(myUser.role)) returnToLobby();">ตกลง</button>
+        <div class="modal-content" style="background: #fffbeb; color: #000;">
+            <h1 style="font-size: 6rem; margin: 0;">🎉</h1>
+            <h1 id="winner-name" style="color: #f59e0b; font-size: 3.5rem; text-shadow: 2px 2px 0 #000;">??? ชนะ!</h1>
+            <h2 style="margin-top: 1rem;">ตัวจริงคือ: <strong id="winner-char" style="color: var(--accent); text-shadow: 1px 1px 0 #000;">???</strong></h2>
+            <button class="btn-primary" style="margin-top: 2rem; font-size: 1.5rem;" onclick="closeModal('modal-winner')">ปิดหน้าต่าง (เล่นคนอื่นต่อ)</button>
         </div>
     </div>
 
-    <div id="modal-tier-action" class="modal-overlay"><div class="modal-content"><h2>ย้ายไปที่ไหนดี?</h2><div id="ta-buttons" style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem;"></div><button class="btn-danger" style="margin-top: 1rem;" onclick="closeModal('modal-tier-action')">ยกเลิก</button></div></div>
+    <div id="modal-tier-action" class="modal-overlay"><div class="modal-content"><h2 style="color: var(--text-main);">ย้ายไปที่ไหนดี?</h2><div id="ta-buttons" style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem;"></div><button class="btn-danger" style="margin-top: 1rem;" onclick="closeModal('modal-tier-action')">ยกเลิก</button></div></div>
     
     <div id="modal-edit-tier" class="modal-overlay">
         <div class="modal-content">
@@ -580,17 +511,11 @@
             <div class="input-group" style="margin-top: 1rem;"><label>ชื่อ Tier</label><input type="text" id="et-name"></div>
             <div class="input-group"><label>สีพื้นหลัง</label><input type="color" id="et-color" value="#ff0000"></div>
             <input type="hidden" id="et-id">
-            <div class="vote-buttons">
-                <button class="btn-primary" onclick="saveTierSetting()">บันทึก</button>
-                <button class="btn-danger" id="et-btn-delete" onclick="deleteTier()">ลบ Tier</button>
-            </div>
+            <div class="vote-buttons"><button class="btn-primary" onclick="saveTierSetting()">บันทึก</button><button class="btn-danger" id="et-btn-delete" onclick="deleteTier()">ลบ Tier</button></div>
         </div>
     </div>
 
     <script>
-        // ==========================================
-        // THAI TRANSLATION MAP
-        // ==========================================
         const thaiToEngMap = {
             "นารูโตะ": "Naruto", "วันพีซ": "One Piece", "วันพีช": "One Piece", "โดราเอมอน": "Doraemon", "โดเรม่อน": "Doraemon",
             "โคนัน": "Detective Conan", "ดาบพิฆาตอสูร": "Demon Slayer", "คิเมทสึ": "Kimetsu no Yaiba",
@@ -618,19 +543,9 @@
             "โค้ดกีอัส": "Code Geass", "สเตนส์เกท": "Steins;Gate", "โนเกมโนไลฟ์": "No Game No Life",
             "ดิจิมอน": "Digimon", "ดิจิม่อน": "Digimon"
         };
+        function translateQuery(q) { let res = q; for(let key in thaiToEngMap) { if(q.includes(key) || q === key) { res = thaiToEngMap[key]; break; } } return res; }
 
-        function translateQuery(q) {
-            let res = q;
-            for(let key in thaiToEngMap) {
-                if(q.includes(key) || q === key) { res = thaiToEngMap[key]; break; }
-            }
-            return res;
-        }
-
-        // ==========================================
-        // AUDIO SYNTHESIZER (Respects settings)
-        // ==========================================
-        let userSettings = { sound: false, vfx: true, anim: true, isDark: false };
+        let userSettings = { sound: true, vfx: true, anim: true, isDark: false };
         let audioCtx = null;
         
         function initAudio() { if(!audioCtx && userSettings.sound) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume(); }
@@ -642,130 +557,66 @@
             gain.gain.setValueAtTime(vol, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
             osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + duration);
         }
+        
+        // SFX Library
         function playSfxCorrect() { playTone(523.25, 'sine', 0.1, 0.2); setTimeout(()=>playTone(659.25, 'sine', 0.2, 0.2), 100); setTimeout(()=>playTone(783.99, 'sine', 0.3, 0.2), 200); }
-        function playSfxWrong() { playTone(150, 'sawtooth', 0.3, 0.2); setTimeout(()=>playTone(100, 'sawtooth', 0.5, 0.2), 150); }
+        function playSfxWrong() { playTone(150, 'sawtooth', 0.3, 0.3); setTimeout(()=>playTone(100, 'sawtooth', 0.5, 0.3), 150); }
         function playSfxMove() { playTone(400, 'triangle', 0.1, 0.05); }
-
-        // ==========================================
-        // SETTINGS LOGIC
-        // ==========================================
-        function loadSettings() {
-            const saved = localStorage.getItem('animePartySettingsV13');
-            if (saved) { userSettings = { ...userSettings, ...JSON.parse(saved) }; }
-            
-            document.getElementById('set-sound').checked = userSettings.sound;
-            document.getElementById('set-anim').checked = userSettings.anim;
-            document.getElementById('set-vfx').checked = userSettings.vfx;
-            document.getElementById('set-theme').checked = userSettings.isDark;
-            applySettingsToUI();
+        function playSfxWinEpic() { 
+            if(!userSettings.sound) return; initAudio(); if(!audioCtx) return;
+            setTimeout(()=>playTone(523.25, 'square', 0.1, 0.1), 0);
+            setTimeout(()=>playTone(659.25, 'square', 0.1, 0.1), 150);
+            setTimeout(()=>playTone(783.99, 'square', 0.1, 0.1), 300);
+            setTimeout(()=>playTone(1046.50, 'square', 0.4, 0.1), 450);
+        }
+        function playSfxAlert() { 
+            if(!userSettings.sound) return; initAudio(); if(!audioCtx) return;
+            playTone(880, 'sine', 0.1, 0.1); setTimeout(()=>playTone(1046.50, 'sine', 0.2, 0.1), 100); 
         }
 
-        function saveSettings() {
-            userSettings.sound = document.getElementById('set-sound').checked;
-            userSettings.anim = document.getElementById('set-anim').checked;
-            userSettings.vfx = document.getElementById('set-vfx').checked;
-            if(userSettings.sound) initAudio();
-            localStorage.setItem('animePartySettingsV13', JSON.stringify(userSettings));
-            applySettingsToUI();
-        }
+        function loadSettings() { const saved = localStorage.getItem('animePartySettingsV16'); if (saved) { userSettings = { ...userSettings, ...JSON.parse(saved) }; } document.getElementById('set-sound').checked = userSettings.sound; document.getElementById('set-anim').checked = userSettings.anim; document.getElementById('set-vfx').checked = userSettings.vfx; document.getElementById('set-theme').checked = userSettings.isDark; applySettingsToUI(); }
+        function saveSettings() { userSettings.sound = document.getElementById('set-sound').checked; userSettings.anim = document.getElementById('set-anim').checked; userSettings.vfx = document.getElementById('set-vfx').checked; if(userSettings.sound) initAudio(); localStorage.setItem('animePartySettingsV16', JSON.stringify(userSettings)); applySettingsToUI(); }
+        function toggleTheme() { userSettings.isDark = document.getElementById('set-theme').checked; localStorage.setItem('animePartySettingsV16', JSON.stringify(userSettings)); applySettingsToUI(); }
+        function applySettingsToUI() { if(userSettings.isDark) document.body.classList.add('dark-mode'); else document.body.classList.remove('dark-mode'); if(userSettings.anim) document.body.classList.remove('no-anim'); else document.body.classList.add('no-anim'); if(userSettings.vfx) document.body.classList.remove('no-vfx'); else document.body.classList.add('no-vfx'); }
 
-        function toggleTheme() {
-            userSettings.isDark = document.getElementById('set-theme').checked;
-            localStorage.setItem('animePartySettingsV13', JSON.stringify(userSettings));
-            applySettingsToUI();
-        }
-
-        function applySettingsToUI() {
-            if(userSettings.isDark) document.body.classList.add('dark-mode'); else document.body.classList.remove('dark-mode');
-            if(userSettings.anim) document.body.classList.remove('no-anim'); else document.body.classList.add('no-anim');
-            if(userSettings.vfx) document.body.classList.remove('no-vfx'); else document.body.classList.add('no-vfx');
-            if(userSettings.sound) document.body.classList.remove('no-sound'); else document.body.classList.add('no-sound');
-        }
-
-        // ==========================================
-        // FIREBASE SETUP
-        // ==========================================
         const firebaseConfig = { apiKey: "AIzaSyAbYF0YybYOHCcNwbrayQEwx6DL_EBHSeo", authDomain: "game-97e90.firebaseapp.com", databaseURL: "https://game-97e90-default-rtdb.firebaseio.com", projectId: "game-97e90", storageBucket: "game-97e90.firebasestorage.app", messagingSenderId: "762122867477", appId: "1:762122867477:web:bdee0526c67b84e3540f1c" };
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.database();
 
-        // ==========================================
-        // GLOBAL STATE & ROLES
-        // ==========================================
         let myUser = { id: 'u_' + Math.floor(Math.random() * 1000000), name: '', avatar: '', role: 'player', team: 'A' };
-        let currentRoomId = null; let roomRef = null; let playersRef = null;
-        let gameState = { players: {} };
-        let typingTimer; let jailInterval;
-        let selectedTierItem = null; let draggedItemInfo = null; 
+        let currentRoomId = null; let roomRef = null; let playersRef = null; let gameState = { players: {} }; let typingTimer;
+
+        // LOCAL STATE FOR V16 BUGS
+        let shownWinners = {}; 
+        let myTurnAlertPlayed = false;
 
         const isHostControl = () => ['host_player', 'admin'].includes(myUser.role);
         const isPlaying = () => ['player', 'host_player'].includes(myUser.role);
         const isAdmin = () => myUser.role === 'admin';
 
-        // ==========================================
-        // UI & PROFILE
-        // ==========================================
         function switchScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function generateRandomAvatar() { const seed = Math.random().toString(36).substr(2, 8); const url = `https://api.dicebear.com/7.x/micah/svg?seed=${seed}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffdfbf,ffd5dc`; myUser.avatar = url; document.getElementById('my-avatar-img').src = url; }
 
-        function generateRandomAvatar() {
-            const seed = Math.random().toString(36).substr(2, 8);
-            const url = `https://api.dicebear.com/7.x/micah/svg?seed=${seed}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffdfbf,ffd5dc`;
-            myUser.avatar = url; document.getElementById('my-avatar-img').src = url;
-        }
+        window.onload = () => { loadSettings(); const saved = localStorage.getItem('animePartyV16'); if (saved) { const d = JSON.parse(saved); myUser.name = d.name || ''; myUser.avatar = d.avatar || ''; } if (!myUser.avatar) generateRandomAvatar(); else document.getElementById('my-avatar-img').src = myUser.avatar; document.getElementById('my-name').value = myUser.name; };
 
-        window.onload = () => {
-            loadSettings();
-            const saved = localStorage.getItem('animePartyV13');
-            if (saved) { const d = JSON.parse(saved); myUser.name = d.name || ''; myUser.avatar = d.avatar || ''; }
-            if (!myUser.avatar) generateRandomAvatar(); else document.getElementById('my-avatar-img').src = myUser.avatar;
-            document.getElementById('my-name').value = myUser.name;
-        };
+        function saveProfileAndGoToJoin() { if(userSettings.sound) initAudio(); const n = document.getElementById('my-name').value.trim(); if (!n) return alert('ตั้งชื่อก่อนครับ!'); myUser.name = n; localStorage.setItem('animePartyV16', JSON.stringify({ name: n, avatar: myUser.avatar })); switchScreen('screen-join'); }
 
-        function saveProfileAndGoToJoin() {
-            if(userSettings.sound) initAudio();
-            const n = document.getElementById('my-name').value.trim();
-            if (!n) return alert('ตั้งชื่อก่อนครับ!');
-            myUser.name = n; localStorage.setItem('animePartyV13', JSON.stringify({ name: n, avatar: myUser.avatar }));
-            switchScreen('screen-join');
-        }
-
-        // ==========================================
-        // LOBBY LOGIC
-        // ==========================================
         function joinRoom() {
             if(userSettings.sound) initAudio();
-            const rId = document.getElementById('room-input').value.trim();
-            if (!rId) return alert('ใส่รหัสห้องด้วยครับ!');
-            currentRoomId = rId; 
-            myUser.role = document.getElementById('role-input').value; 
-            myUser.team = 'A';
-            
-            roomRef = db.ref(`rooms/${currentRoomId}`);
-            playersRef = db.ref(`rooms/${currentRoomId}/players`);
-            
-            const myRef = playersRef.child(myUser.id);
-            myRef.set(myUser); myRef.onDisconnect().remove();
-            
-            document.getElementById('lobby-room-id').innerText = currentRoomId;
-            document.getElementById('host-lobby-panel').style.display = isHostControl() ? 'block' : 'none';
-            document.getElementById('team-selector').style.display = isPlaying() ? 'flex' : 'none';
+            const rId = document.getElementById('room-input').value.trim(); if (!rId) return alert('ใส่รหัสห้องด้วยครับ!'); currentRoomId = rId; myUser.role = document.getElementById('role-input').value; myUser.team = 'A';
+            roomRef = db.ref(`rooms/${currentRoomId}`); playersRef = db.ref(`rooms/${currentRoomId}/players`);
+            const myRef = playersRef.child(myUser.id); myRef.set(myUser); myRef.onDisconnect().remove();
+            document.getElementById('lobby-room-id').innerText = currentRoomId; document.getElementById('host-lobby-panel').style.display = isHostControl() ? 'block' : 'none'; document.getElementById('team-selector').style.display = isPlaying() ? 'flex' : 'none';
             listenToRoom();
         }
 
-        function leaveRoom() {
-            if (playersRef) playersRef.child(myUser.id).remove();
-            if (roomRef) roomRef.off();
-            currentRoomId = null; switchScreen('screen-join');
-        }
+        function leaveRoom() { if (playersRef) playersRef.child(myUser.id).remove(); if (roomRef) roomRef.off(); currentRoomId = null; switchScreen('screen-join'); }
 
         function listenToRoom() {
             roomRef.on('value', snap => {
-                const data = snap.val() || { players: {} };
-                gameState = data;
-                renderLobbyPlayers(data.players || {});
-                
+                const data = snap.val() || { players: {} }; gameState = data; renderLobbyPlayers(data.players || {});
                 if (!data.state || data.state === 'lobby') switchScreen('screen-lobby');
                 else if (data.state === 'game1') handleGame1Update(data);
                 else if (data.state.startsWith('game2')) handleGame2Update(data);
@@ -777,105 +628,90 @@
         function renderLobbyPlayers(pObj) {
             const c = document.getElementById('players-list-lobby'); c.innerHTML = ''; let count = 0;
             Object.values(pObj).forEach(p => {
-                count++; 
-                let badgeHtml = '';
+                count++; let borderClass = 'var(--border-color)'; let badgeHtml = '';
                 if(p.role === 'admin') { badgeHtml = '<span class="player-role-badge admin-badge">👁️ Admin</span>'; }
                 else if(p.role === 'host_player') { badgeHtml = '<span class="player-role-badge host-badge">👑 Host</span>'; }
-                else { badgeHtml = `<span class="player-role-badge">Team ${p.team||'A'}</span>`; }
-                
-                c.innerHTML += `<div class="player-card">${badgeHtml}<img class="avatar" src="${p.avatar}"><div class="player-name">${p.name}</div></div>`;
+                else { badgeHtml = `<span class="player-role-badge">Team ${p.team||'A'}</span>`; borderClass = p.team === 'A' ? 'var(--team-a)' : 'var(--team-b)'; }
+                c.innerHTML += `<div class="player-card" style="border-color: ${borderClass};">${badgeHtml}<img class="avatar" src="${p.avatar}"><div class="player-name">${p.name}</div></div>`;
             });
             document.getElementById('player-count').innerText = count;
         }
 
-        function changeMyTeam(teamStr) { if(!isPlaying()) return; myUser.team = teamStr; playersRef.child(myUser.id).update({ team: teamStr }); }
+        function changeMyTeam(teamStr) { if(!isPlaying()) return; myUser.team = teamStr; playersRef.child(myUser.id).update({ team: teamStr }); playSfxMove(); }
         function returnToLobby() { if(isHostControl()) roomRef.update({ state: 'lobby', game2: null }); }
 
         function startGame(game, mode) {
+            shownWinners = {}; myTurnAlertPlayed = false; // Reset local state
             let updates = { state: game === 'game2' ? `game2_${mode}` : game };
             if (game === 'game1') updates.game1 = { teamA: null, teamB: null, revealed: false };
-            if (game === 'game2') updates.game2 = { mode: mode, target: null, revealed: false, assignments: mode==='headband'? generateAssignments(gameState.players):null, voteData: null, jails: {}, winner: null };
+            if (game === 'game2') updates.game2 = { mode: mode, target: null, revealed: false, assignments: mode==='headband'? generateAssignments(gameState.players):null, voteData: null, winners: {}, currentTurn: null };
             if (game === 'game3') updates.game3 = { videoId: '', isYoutube: true, title: '', locked: false, isPlaying: false, revealed: false, buzzerId: null };
             if (game === 'game4') updates.game4 = { tiers: [ {id:'t1', name:'S', color:'#ef4444', items:[]}, {id:'t2', name:'A', color:'#f97316', items:[]}, {id:'t3', name:'B', color:'#f59e0b', items:[]}, {id:'t4', name:'C', color:'#eab308', items:[]}, {id:'t5', name:'D', color:'#22c55e', items:[]} ], pool: [] };
-            roomRef.update(updates);
+            roomRef.update(updates); playSfxCorrect();
         }
 
-        function syncReturnButtons() {
-            document.querySelectorAll('.btn-return-lobby').forEach(btn => {
-                btn.style.display = isHostControl() ? 'inline-block' : 'none';
+        function syncReturnButtons() { document.querySelectorAll('.btn-return-lobby').forEach(btn => { btn.style.display = isHostControl() ? 'inline-block' : 'none'; }); }
+
+        // === GAME 1 ===
+        function handleGame1Update(data) {
+            switchScreen('screen-game1'); syncReturnButtons(); const g1Data = data.game1 || {}; const teamA = g1Data.teamA; const teamB = g1Data.teamB; const revealed = g1Data.revealed;
+            const searchA = document.getElementById('g1-search-A'); const searchB = document.getElementById('g1-search-B'); const btnReveal = document.getElementById('g1-btn-reveal');
+            if (isHostControl()) btnReveal.style.display = 'block'; else btnReveal.style.display = 'none';
+            if (isPlaying()) { searchA.style.display = myUser.team === 'A' ? 'block' : 'none'; searchB.style.display = myUser.team === 'B' ? 'block' : 'none'; } else { searchA.style.display = 'none'; searchB.style.display = 'none'; }
+            if (teamA && teamA.locked) { if (revealed || myUser.team === 'A' || !isPlaying()) { showCardUI('g1', 'A', teamA.title, teamA.imageUrl); document.getElementById('g1-locked-A').style.display = 'none'; if (myUser.team === 'A') searchA.style.display = 'none'; } else { document.getElementById('g1-locked-A').style.display = 'flex'; } document.getElementById('g1-status-A').innerText = "พร้อมแล้ว!"; } else { resetCardUI('g1', 'A'); document.getElementById('g1-locked-A').style.display = 'none'; if (myUser.team === 'A' && isPlaying()) searchA.style.display = 'block'; }
+            if (teamB && teamB.locked) { if (revealed || myUser.team === 'B' || !isPlaying()) { showCardUI('g1', 'B', teamB.title, teamB.imageUrl); document.getElementById('g1-locked-B').style.display = 'none'; if (myUser.team === 'B') searchB.style.display = 'none'; } else { document.getElementById('g1-locked-B').style.display = 'flex'; } document.getElementById('g1-status-B').innerText = "พร้อมแล้ว!"; } else { resetCardUI('g1', 'B'); document.getElementById('g1-locked-B').style.display = 'none'; if (myUser.team === 'B' && isPlaying()) searchB.style.display = 'block'; }
+            if (revealed && isHostControl()) { btnReveal.innerText = "🔄 เริ่มเกม 1 ใหม่อีกรอบ"; btnReveal.onclick = () => startGame('game1'); } else if (isHostControl()) { btnReveal.innerText = "🎉 ผู้คุม: กดเฉลยคำตอบ!"; btnReveal.onclick = () => hostRevealGame('game1'); }
+        }
+        function showCardUI(p, s, t, i) { document.getElementById(`${p}-status-${s}`).style.display = 'none'; document.getElementById(`${p}-img-${s}`).src = i; document.getElementById(`${p}-img-${s}`).style.display = 'block'; document.getElementById(`${p}-title-${s}`).innerText = t; document.getElementById(`${p}-title-${s}`).style.display = 'block'; }
+        function resetCardUI(p, s) { document.getElementById(`${p}-status-${s}`).style.display = 'block'; document.getElementById(`${p}-status-${s}`).innerText = "ยังไม่เลือกคำตอบ"; document.getElementById(`${p}-img-${s}`).style.display = 'none'; document.getElementById(`${p}-title-${s}`).style.display = 'none'; }
+        function hostRevealGame(gameKey) { roomRef.child(gameKey).update({ revealed: true }); playSfxWinEpic(); }
+
+        // === GAME 2 (V16 FIXED WINNER MODAL & SOUNDS) ===
+        function generateAssignments(pObj) {
+            let pIds = Object.keys(pObj).filter(id => pObj[id].role !== 'admin'); if (pIds.length < 2) return null; 
+            for (let i = pIds.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pIds[i], pIds[j]] = [pIds[j], pIds[i]]; }
+            let assignments = {}; for (let i = 0; i < pIds.length; i++) { assignments[pIds[i]] = { targetId: pIds[(i + 1) % pIds.length], character: null }; } return assignments;
+        }
+
+        function nextTurnG2() {
+            roomRef.child('game2').once('value', snap => {
+                const g2 = snap.val(); const players = gameState.players;
+                const activeIds = Object.keys(players).filter(id => players[id].role !== 'admin' && (!g2.winners || !g2.winners[id]));
+                if(activeIds.length === 0) { alert("ทุกคนชนะหมดแล้ว!"); return; }
+                
+                let nextId = activeIds[0];
+                if(g2.currentTurn) {
+                    let idx = activeIds.indexOf(g2.currentTurn);
+                    if(idx !== -1 && idx + 1 < activeIds.length) nextId = activeIds[idx + 1];
+                }
+                roomRef.child('game2/currentTurn').set(nextId);
+                playSfxMove();
             });
         }
 
-        // ==========================================
-        // GAME 1 LOGIC (Secret Anime Guess)
-        // ==========================================
-        function handleGame1Update(data) {
-            switchScreen('screen-game1');
-            syncReturnButtons();
-            
-            const g1Data = data.game1 || {};
-            const teamA = g1Data.teamA; const teamB = g1Data.teamB; const revealed = g1Data.revealed;
-            const searchA = document.getElementById('g1-search-A'); const searchB = document.getElementById('g1-search-B');
-            const btnReveal = document.getElementById('g1-btn-reveal');
-            
-            if (isHostControl()) btnReveal.style.display = 'block'; else btnReveal.style.display = 'none';
-            if (isPlaying()) {
-                searchA.style.display = myUser.team === 'A' ? 'block' : 'none';
-                searchB.style.display = myUser.team === 'B' ? 'block' : 'none';
-            } else { searchA.style.display = 'none'; searchB.style.display = 'none'; }
-
-            if (teamA && teamA.locked) {
-                if (revealed || myUser.team === 'A' || !isPlaying()) {
-                    showCardUI('g1', 'A', teamA.title, teamA.imageUrl); document.getElementById('g1-locked-A').style.display = 'none';
-                    if (myUser.team === 'A') searchA.style.display = 'none';
-                } else { document.getElementById('g1-locked-A').style.display = 'flex'; }
-                document.getElementById('g1-status-A').innerText = "พร้อมแล้ว!";
-            } else { resetCardUI('g1', 'A'); document.getElementById('g1-locked-A').style.display = 'none'; if (myUser.team === 'A' && isPlaying()) searchA.style.display = 'block'; }
-
-            if (teamB && teamB.locked) {
-                if (revealed || myUser.team === 'B' || !isPlaying()) {
-                    showCardUI('g1', 'B', teamB.title, teamB.imageUrl); document.getElementById('g1-locked-B').style.display = 'none';
-                    if (myUser.team === 'B') searchB.style.display = 'none';
-                } else { document.getElementById('g1-locked-B').style.display = 'flex'; }
-                document.getElementById('g1-status-B').innerText = "พร้อมแล้ว!";
-            } else { resetCardUI('g1', 'B'); document.getElementById('g1-locked-B').style.display = 'none'; if (myUser.team === 'B' && isPlaying()) searchB.style.display = 'block'; }
-
-            if (revealed && isHostControl()) { btnReveal.innerText = "🔄 เริ่มเกม 1 ใหม่อีกรอบ"; btnReveal.onclick = () => startGame('game1'); } 
-            else if (isHostControl()) { btnReveal.innerText = "🎉 ผู้คุม: กดเฉลยคำตอบ!"; btnReveal.onclick = () => hostRevealGame('game1'); }
-        }
-
-        function showCardUI(p, s, t, i) { document.getElementById(`${p}-status-${s}`).style.display = 'none'; document.getElementById(`${p}-img-${s}`).src = i; document.getElementById(`${p}-img-${s}`).style.display = 'block'; document.getElementById(`${p}-title-${s}`).innerText = t; document.getElementById(`${p}-title-${s}`).style.display = 'block'; }
-        function resetCardUI(p, s) { document.getElementById(`${p}-status-${s}`).style.display = 'block'; document.getElementById(`${p}-status-${s}`).innerText = "ยังไม่เลือกคำตอบ"; document.getElementById(`${p}-img-${s}`).style.display = 'none'; document.getElementById(`${p}-title-${s}`).style.display = 'none'; }
-        function hostRevealGame(gameKey) { roomRef.child(gameKey).update({ revealed: true }); playSfxCorrect(); }
-
-        // ==========================================
-        // GAME 2 LOGIC (Who Am I)
-        // ==========================================
-        function generateAssignments(pObj) {
-            let pIds = Object.keys(pObj).filter(id => pObj[id].role !== 'admin');
-            if (pIds.length < 2) return null; 
-            for (let i = pIds.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pIds[i], pIds[j]] = [pIds[j], pIds[i]]; }
-            let assignments = {};
-            for (let i = 0; i < pIds.length; i++) { assignments[pIds[i]] = { targetId: pIds[(i + 1) % pIds.length], character: null }; }
-            return assignments;
-        }
-
         function handleGame2Update(data) {
-            switchScreen('screen-game2');
-            syncReturnButtons();
-            
-            const g2 = data.game2; const isHostMode = data.state === 'game2_host';
-            document.getElementById('g2-title-mode').innerText = isHostMode ? "ฉันเป็นใคร (Host Mode)" : "โหมดแปะหน้าผาก";
-            
-            if (g2.winner) {
-                document.getElementById('winner-name').innerText = g2.winner.name;
-                document.getElementById('winner-char').innerText = g2.winner.char;
-                openModal('modal-winner');
-            } else { closeModal('modal-winner'); }
+            switchScreen('screen-game2'); syncReturnButtons();
+            const g2 = data.game2 || {}; const isHostMode = data.state === 'game2_host';
+            document.getElementById('g2-title-mode').innerText = isHostMode ? "ฉันเป็นใคร (Host Mode)" : "โหมดแปะหน้าผาก (ทัวร์นาเมนต์)";
+
+            // V16 FIX: Show winner modal ONLY ONCE per user
+            if (g2.winners) {
+                Object.keys(g2.winners).forEach(wid => {
+                    if (!shownWinners[wid]) {
+                        document.getElementById('winner-name').innerText = g2.winners[wid].name;
+                        document.getElementById('winner-char').innerText = g2.winners[wid].char;
+                        openModal('modal-winner');
+                        playSfxWinEpic();
+                        shownWinners[wid] = true; // Mark as shown locally
+                    }
+                });
+            }
 
             if (isHostMode) {
                 document.getElementById('g2-headband-setup').style.display = 'none'; document.getElementById('g2-playing-area').style.display = 'none';
                 document.getElementById('g2-host-controls').style.display = isHostControl() ? 'block' : 'none'; document.getElementById('g2-host-display').style.display = 'flex';
+                document.getElementById('g2-turn-controls').style.display = 'none'; 
+
                 if (g2.target) {
                     if (g2.revealed || !isPlaying()) {
                         document.getElementById('g2-img-host').src = g2.target.imageUrl; document.getElementById('g2-img-host').style.display = 'block';
@@ -883,15 +719,19 @@
                     } else { document.getElementById('g2-locked-host').style.display = 'flex'; document.getElementById('g2-img-host').style.display = 'none'; document.getElementById('g2-title-host').style.display = 'none'; }
                     if (isHostControl()) document.getElementById('g2-btn-reveal-host').disabled = false;
                 } else { document.getElementById('g2-img-host').style.display = 'none'; document.getElementById('g2-title-host').style.display = 'none'; document.getElementById('g2-locked-host').style.display = 'none'; if (isHostControl()) document.getElementById('g2-btn-reveal-host').disabled = true; }
+                
+                handleVotingSystem(g2.voteData, data.players, g2);
+
             } else {
                 document.getElementById('g2-host-controls').style.display = 'none'; document.getElementById('g2-host-display').style.display = 'none';
                 
                 if (!g2.assignments) {
-                    if(isPlaying()) document.getElementById('g2-headband-setup').innerHTML = '<h2 style="color:red;">ผู้เล่นไม่พอ หรือแอดมินลืมตั้งค่า</h2>';
+                    if(isPlaying()) document.getElementById('g2-headband-setup').innerHTML = '<h2 style="color:var(--team-a);">ผู้เล่นไม่พอ หรือแอดมินลืมตั้งค่า</h2>';
                     document.getElementById('g2-headband-setup').style.display = 'block'; return;
                 }
                 let allSet = true; Object.values(g2.assignments).forEach(a => { if (!a.character) allSet = false; });
                 if (!allSet) {
+                    document.getElementById('g2-turn-controls').style.display = 'none';
                     document.getElementById('g2-headband-setup').style.display = 'block'; document.getElementById('g2-playing-area').style.display = 'none';
                     const myTask = g2.assignments[myUser.id];
                     if (myTask) { 
@@ -902,15 +742,40 @@
                     }
                 } else {
                     document.getElementById('g2-headband-setup').style.display = 'none'; document.getElementById('g2-playing-area').style.display = 'block';
+                    
+                    if(isHostControl()) document.getElementById('g2-turn-controls').style.display = 'block';
+                    else document.getElementById('g2-turn-controls').style.display = 'none';
+
+                    const isMyTurn = g2.currentTurn === myUser.id;
+                    const amIWinner = g2.winners && g2.winners[myUser.id];
+                    
+                    const guessBtn = document.getElementById('g2-btn-guess');
                     document.getElementById('g2-player-actions').style.display = isPlaying() ? 'block' : 'none';
-                    renderHeadbandGrid(data.players, g2.assignments, g2.jails || {}); 
-                    handleJailTime(g2.jails ? g2.jails[myUser.id] : null); 
-                    handleVotingSystem(g2.voteData, data.players);
+
+                    // Turn Alert Logic
+                    if (isMyTurn) {
+                        if (!myTurnAlertPlayed) { playSfxAlert(); myTurnAlertPlayed = true; }
+                        guessBtn.disabled = false; guessBtn.innerText = "🙋‍♂️ ตาคุณแล้ว! กดขอตอบ"; guessBtn.style.background = "var(--accent)";
+                    } else {
+                        myTurnAlertPlayed = false;
+                        if (!g2.currentTurn) {
+                            guessBtn.disabled = true; guessBtn.innerText = "รอแอดมินกดเริ่มเทิร์น...";
+                        } else if (amIWinner) {
+                            guessBtn.style.display = 'none'; 
+                        } else {
+                            guessBtn.disabled = true; 
+                            const turnName = data.players[g2.currentTurn]?.name || "เพื่อน";
+                            guessBtn.innerText = `ตานี้เป็นของ: ${turnName}`; guessBtn.style.background = "var(--text-muted)";
+                        }
+                    }
+
+                    renderHeadbandGrid(data.players, g2.assignments, g2.winners || {}, g2.currentTurn); 
+                    handleVotingSystem(g2.voteData, data.players, g2);
                 }
             }
         }
 
-        function renderHeadbandGrid(players, assignments, jails) {
+        function renderHeadbandGrid(players, assignments, winners, currentTurn) {
             const grid = document.getElementById('g2-headband-grid'); grid.innerHTML = '';
             let headMap = {}; Object.values(assignments).forEach(a => { headMap[a.targetId] = a.character; });
             Object.values(players).forEach(p => {
@@ -919,33 +784,24 @@
                 if (!isAdmin() && p.id === myUser.id) headHtml = `<div class="headband-unknown">❓</div>`; 
                 else if (char) headHtml = `<img class="headband-img" src="${char.imageUrl}">`;
                 
-                let jailHtml = ''; const jt = jails[p.id]; 
-                if (jt && jt > Date.now()) jailHtml = `<div class="jail-overlay" id="jail-ui-${p.id}"><div class="jail-text">ติดคุก!</div></div>`;
-                grid.innerHTML += `<div class="player-card" style="margin-top: 60px;">${headHtml}<img class="avatar" src="${p.avatar}"><div class="player-name">${p.name}</div>${jailHtml}</div>`;
-            });
-        }
+                const isTurn = (p.id === currentTurn);
+                const turnClass = isTurn ? 'active-turn' : '';
+                const turnBadge = isTurn ? `<div class="turn-badge">ตานี้คนถาม 👇</div>` : '';
 
-        function handleJailTime(releaseTimeMs) {
-            clearInterval(jailInterval);
-            const btn = document.getElementById('g2-btn-guess'); const timerDisplay = document.getElementById('my-jail-timer'); 
-            if (releaseTimeMs && releaseTimeMs > Date.now()) { 
-                btn.disabled = true; timerDisplay.style.display = 'inline-block'; 
-                jailInterval = setInterval(() => { 
-                    const remaining = Math.ceil((releaseTimeMs - Date.now()) / 1000); 
-                    if (remaining <= 0) { 
-                        clearInterval(jailInterval); btn.disabled = false; timerDisplay.style.display = 'none'; 
-                        const myJailUI = document.getElementById(`jail-ui-${myUser.id}`);
-                        if(myJailUI) myJailUI.style.display = 'none';
-                    } 
-                    else { document.getElementById('jail-sec').innerText = remaining; } 
-                }, 1000); 
-            } else { btn.disabled = false; timerDisplay.style.display = 'none'; }
+                let winnerHtml = '';
+                if (winners[p.id]) {
+                    winnerHtml = `<div class="winner-overlay"><h3>🎉 ชนะแล้ว!</h3><p>${winners[p.id].char}</p></div>`;
+                    headHtml = `<img class="headband-img" src="${char.imageUrl}">`; 
+                }
+
+                grid.innerHTML += `<div class="player-card ${turnClass}" style="margin-top: 80px;">${headHtml}<img class="avatar" src="${p.avatar}"><div class="player-name">${p.name}</div>${turnBadge}${winnerHtml}</div>`;
+            });
         }
 
         function openGuessModal() { document.getElementById('guess-input').value = ''; openModal('modal-make-guess'); }
         function submitGuess() { const t = document.getElementById('guess-input').value.trim(); if(!t) return; playSfxMove(); roomRef.child('game2/voteData').set({ guesserId: myUser.id, text: t, yes: 0, no: 0, voters: { init: true } }); closeModal('modal-make-guess'); }
         
-        function handleVotingSystem(voteData, players) {
+        function handleVotingSystem(voteData, players, g2) {
             if (!voteData) { closeModal('modal-vote'); return; }
             
             const adminId = Object.keys(players).find(id => players[id].role === 'admin');
@@ -953,6 +809,10 @@
 
             document.getElementById('vote-who').innerText = players[voteData.guesserId]?.name || 'เพื่อน';
             document.getElementById('vote-what').innerText = voteData.text;
+
+            document.getElementById('live-score-display').style.display = 'flex';
+            document.getElementById('score-yes').innerText = voteData.yes || 0;
+            document.getElementById('score-no').innerText = voteData.no || 0;
 
             const actAdmin = document.getElementById('vote-actions-admin');
             const actGroup = document.getElementById('vote-actions-group');
@@ -962,15 +822,17 @@
 
             if (adminId) {
                 if (isAdmin()) { actAdmin.style.display = 'flex'; } 
-                else { actWait.style.display = 'block'; actWait.innerHTML = '<h3>⏳ แอดมินกำลังพิจารณา...</h3>'; }
+                else { actWait.style.display = 'block'; document.getElementById('vote-waiting-text').innerText = '⏳ แอดมินกำลังชี้ขาด...'; }
             } else {
-                if (isGuesser) { actWait.style.display = 'block'; actWait.innerHTML = '<h3>⏳ รอเพื่อนโหวต...</h3>'; } 
+                if (isGuesser) { actWait.style.display = 'block'; document.getElementById('vote-waiting-text').innerText = '⏳ รอเพื่อนๆ โหวตให้...'; } 
                 else {
-                    if (voteData.voters && voteData.voters[myUser.id]) { actWait.style.display = 'block'; actWait.innerHTML = '<h3>⏳ รอคนอื่นโหวตให้ครบ...</h3>'; } 
+                    if (voteData.voters && voteData.voters[myUser.id]) { actWait.style.display = 'block'; document.getElementById('vote-waiting-text').innerText = '⏳ คุณโหวตแล้ว รอคนอื่นโหวตให้ครบ...'; } 
                     else { actGroup.style.display = 'flex'; }
                 }
                 
-                const activePlayers = Object.values(players).filter(p => p.role !== 'admin').length; const req = activePlayers - 1;
+                const activePlayers = Object.values(players).filter(p => p.role !== 'admin' && (!g2.winners || !g2.winners[p.id])).length; 
+                const req = activePlayers - 1; 
+                
                 if ((voteData.yes + voteData.no) >= req && req > 0) {
                     if (isGuesser) processVoteResult(voteData);
                 }
@@ -982,35 +844,40 @@
             roomRef.child('game2/voteData').once('value', snap => {
                 const v = snap.val();
                 if(v) {
-                    if(isCorrect) { playSfxCorrect(); roomRef.child('game2/winner').set({ name: gameState.players[v.guesserId].name, char: v.text }); }
-                    else { playSfxWrong(); roomRef.child(`game2/jails/${v.guesserId}`).set(Date.now() + 30000); }
+                    if(isCorrect) { 
+                        roomRef.child(`game2/winners/${v.guesserId}`).set({ name: gameState.players[v.guesserId].name, char: v.text }); 
+                    } else { 
+                        alert(`ผู้เล่น ${gameState.players[v.guesserId].name} ตอบผิด! เสียเทิร์น`);
+                        playSfxWrong();
+                    }
                     roomRef.child('game2/voteData').remove();
                 }
             });
         }
 
-        function castVote(type) { roomRef.child('game2/voteData').once('value', snap => { const v = snap.val(); if(v) { let y = v.yes||0; let n = v.no||0; if(type==='yes') y++; else n++; roomRef.child('game2/voteData').update({ yes: y, no: n, [`voters/${myUser.id}`]: true }); } }); closeModal('modal-vote'); }
+        function castVote(type) { roomRef.child('game2/voteData').once('value', snap => { const v = snap.val(); if(v) { let y = v.yes||0; let n = v.no||0; if(type==='yes') y++; else n++; roomRef.child('game2/voteData').update({ yes: y, no: n, [`voters/${myUser.id}`]: true }); playSfxMove(); } }); }
+        
         function processVoteResult(voteData) {
-            if (voteData.yes > voteData.no) { playSfxCorrect(); roomRef.child('game2/winner').set({ name: myUser.name, char: voteData.text }); roomRef.child('game2/voteData').remove(); } 
-            else { playSfxWrong(); roomRef.child(`game2/jails/${myUser.id}`).set(Date.now() + 30000); roomRef.child('game2/voteData').remove(); }
+            if (voteData.yes > voteData.no) { 
+                roomRef.child(`game2/winners/${myUser.id}`).set({ name: myUser.name, char: voteData.text }); 
+            } else { 
+                alert('เพื่อนโหวตว่าผิด! คุณเสียเทิร์นรอบนี้');
+                playSfxWrong();
+            }
+            roomRef.child('game2/voteData').remove();
         }
 
-        // ==========================================
-        // GAME 3 LOGIC (OP/ED BUZZER)
-        // ==========================================
+        // === GAME 3 ===
         function setOpVideo(videoData, answerTitle, isYoutubeFlag) { roomRef.child('game3').set({ videoId: videoData, isYoutube: isYoutubeFlag, title: answerTitle, locked: true, isPlaying: false, revealed: false, buzzerId: null }); }
         function setCustomOpVideo() { const urlOrId = document.getElementById('g3-custom-id').value.trim(); const title = document.getElementById('g3-custom-title').value.trim(); if(!urlOrId || !title) return alert("ใส่ข้อมูลให้ครบ!"); let vidId = urlOrId; let isYoutube = false; const match = urlOrId.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i); if(match) { vidId = match[1]; isYoutube = true; } setOpVideo(vidId, title, isYoutube); }
         function hostCancelVideo() { roomRef.child('game3').update({ locked: false, isPlaying: false }); document.getElementById('g3-preview-iframe').src = ""; document.getElementById('g3-preview-video').src = ""; }
         function hostPlayVideo() { roomRef.child('game3').update({ isPlaying: true }); document.getElementById('g3-preview-iframe').src = ""; document.getElementById('g3-preview-video').src = ""; }
-        function hostRevealGame3() { roomRef.child('game3').update({ revealed: true, buzzerId: null }); playSfxCorrect(); }
+        function hostRevealGame3() { roomRef.child('game3').update({ revealed: true, buzzerId: null }); playSfxWinEpic(); }
         function buzzIn() { playSfxMove(); roomRef.child('game3/buzzerId').transaction(currentData => { if (currentData === null) return myUser.id; return; }); }
         function hostJudgeBuzzer(isCorrect) { if (isCorrect) hostRevealGame3(); else { playSfxWrong(); roomRef.child('game3/buzzerId').set(null); } }
 
         function handleGame3Update(data) {
-            switchScreen('screen-game3'); 
-            syncReturnButtons();
-            const g3 = data.game3;
-            
+            switchScreen('screen-game3'); syncReturnButtons(); const g3 = data.game3;
             if (isHostControl()) {
                 document.getElementById('g3-host-controls').style.display = 'block'; document.getElementById('g3-btn-reveal').style.display = g3.locked ? 'block' : 'none';
                 if (g3.locked && !g3.isPlaying && !g3.revealed) {
@@ -1037,93 +904,18 @@
             } else { statusDisplay.style.display = 'block'; statusDisplay.innerText = "รอแอดมินเลือกวิดีโอ..."; videoContainer.style.display = 'none'; document.getElementById('g3-answer-display').style.display = 'none'; iframe.src = ""; htmlVideo.src = ""; buzzArea.style.display = 'none'; if (judgePanel) judgePanel.style.display = 'none'; if(isHostControl()) document.getElementById('g3-btn-reveal').disabled = true; }
         }
 
-        // ==========================================
-        // GAME 4 LOGIC (TIER LIST) & SCREENSHOT
-        // ==========================================
-        function handleGame4Update(data) {
-            switchScreen('screen-game4'); 
-            syncReturnButtons();
-            
-            const g4 = data.game4; if (!g4 || !g4.tiers) return;
-            renderTierBoard(g4.tiers); renderTierPool(g4.pool || []);
-            document.getElementById('g4-host-actions').style.display = isHostControl() ? 'flex' : 'none';
-        }
-
-        function renderTierBoard(tiers) {
-            const board = document.getElementById('g4-tier-board'); board.innerHTML = '';
-            tiers.forEach((tier, index) => {
-                const itemsHtml = (tier.items || []).map(item => `<div class="tier-item-card" draggable="true" ondragstart="dragStart(event, '${item.id}')" onclick="openMoveModal('${item.id}')"><img src="${item.img}"><div class="item-name">${item.name}</div></div>`).join('');
-                let controlsHtml = isHostControl() ? `<div class="tier-controls"><button class="tier-btn" onclick="moveTierOrder(${index}, -1)">▲</button><button class="tier-btn" onclick="moveTierOrder(${index}, 1)">▼</button></div>` : '';
-                board.innerHTML += `<div class="tier-row" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'tier', ${index})" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)"><div class="tier-label-container"><div class="tier-label" style="background-color: ${tier.color};" ${isHostControl() ? `onclick="openEditTierModal(${index}, '${tier.id}', '${tier.name}', '${tier.color}')"` : ''}>${tier.name}</div>${controlsHtml}</div><div class="tier-items">${itemsHtml}</div></div>`;
-            });
-        }
-
-        function renderTierPool(pool) {
-            const container = document.getElementById('g4-tier-pool'); container.innerHTML = '';
-            if (pool.length === 0) return container.innerHTML = '<h3 style="color:var(--text-muted); width:100%; text-align:center; pointer-events: none;">ยังไม่มีการ์ตูนในกองกลาง ลองค้นหาดูสิ!</h3>';
-            pool.forEach(item => { container.innerHTML += `<div class="tier-item-card" draggable="true" ondragstart="dragStart(event, '${item.id}')" onclick="openMoveModal('${item.id}')"><img src="${item.img}"><div class="item-name">${item.name}</div></div>`; });
-        }
-
-        function addPresetToTier(name, imgUrl) { const uid = 'item_' + Date.now() + Math.floor(Math.random()*100); roomRef.child('game4/pool').once('value', snap => { let currentPool = snap.val() || []; currentPool.push({ id: uid, name: name, img: imgUrl }); roomRef.child('game4/pool').set(currentPool); playSfxMove();}); }
-
-        // --- Capture Tier List ---
-        function captureTierList() {
-            const board = document.getElementById('g4-tier-board');
-            const controls = board.querySelectorAll('.tier-controls');
-            controls.forEach(c => c.style.display = 'none');
-            
-            html2canvas(board, {
-                backgroundColor: userSettings.bgColor, 
-                scale: 2 
-            }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = 'AnimeTierList.png';
-                link.href = canvas.toDataURL();
-                link.click();
-                controls.forEach(c => c.style.display = 'flex');
-            });
-        }
-
-        // --- Drag & Drop ---
+        // === GAME 4 ===
+        function handleGame4Update(data) { switchScreen('screen-game4'); syncReturnButtons(); const g4 = data.game4; if (!g4 || !g4.tiers) return; renderTierBoard(g4.tiers); renderTierPool(g4.pool || []); document.getElementById('g4-host-actions').style.display = isHostControl() ? 'flex' : 'none'; }
+        function renderTierBoard(tiers) { const board = document.getElementById('g4-tier-board'); board.innerHTML = ''; tiers.forEach((tier, index) => { const itemsHtml = (tier.items || []).map(item => `<div class="tier-item-card" draggable="true" ondragstart="dragStart(event, '${item.id}')" onclick="openMoveModal('${item.id}')"><img src="${item.img}"><div class="item-name">${item.name}</div></div>`).join(''); let controlsHtml = isHostControl() ? `<div class="tier-controls"><button class="tier-btn" onclick="moveTierOrder(${index}, -1)">▲</button><button class="tier-btn" onclick="moveTierOrder(${index}, 1)">▼</button></div>` : ''; board.innerHTML += `<div class="tier-row" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'tier', ${index})" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)"><div class="tier-label-container"><div class="tier-label" style="background-color: ${tier.color};" ${isHostControl() ? `onclick="openEditTierModal(${index}, '${tier.id}', '${tier.name}', '${tier.color}')"` : ''}>${tier.name}</div>${controlsHtml}</div><div class="tier-items">${itemsHtml}</div></div>`; }); }
+        function renderTierPool(pool) { const container = document.getElementById('g4-tier-pool'); container.innerHTML = ''; if (pool.length === 0) return container.innerHTML = '<h3 style="color:var(--text-muted); width:100%; text-align:center; pointer-events: none;">ยังไม่มีการ์ตูนในกองกลาง ลองค้นหาดูสิ!</h3>'; pool.forEach(item => { container.innerHTML += `<div class="tier-item-card" draggable="true" ondragstart="dragStart(event, '${item.id}')" onclick="openMoveModal('${item.id}')"><img src="${item.img}"><div class="item-name">${item.name}</div></div>`; }); }
+        function addPresetToTier(name, imgUrl) { const uid = 'item_' + Date.now() + Math.floor(Math.random()*100); roomRef.child('game4/pool').once('value', snap => { let currentPool = snap.val() || []; currentPool.push({ id: uid, name: name, img: imgUrl }); roomRef.child('game4/pool').set(currentPool); playSfxMove(); }); }
+        function captureTierList() { const board = document.getElementById('g4-tier-board'); const controls = board.querySelectorAll('.tier-controls'); controls.forEach(c => c.style.display = 'none'); html2canvas(board, { backgroundColor: userSettings.bgColor, scale: 2 }).then(canvas => { const link = document.createElement('a'); link.download = 'AnimeTierList.png'; link.href = canvas.toDataURL(); link.click(); controls.forEach(c => c.style.display = 'flex'); }); }
         function dragStart(e, id) { e.dataTransfer.setData('text/plain', id); setTimeout(() => e.target.classList.add('dragging'), 0); }
-        function allowDrop(e) { e.preventDefault(); } 
-        function dragEnter(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); } 
-        function dragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
-        function handleDrop(e, destLocation, destIndex) { 
-            e.preventDefault(); e.currentTarget.classList.remove('drag-over'); 
-            const itemId = e.dataTransfer.getData('text/plain'); if(!itemId) return; 
-            executeMoveItemById(itemId, destLocation, destIndex); 
-            document.querySelectorAll('.tier-item-card').forEach(el => el.classList.remove('dragging')); 
-        }
-
-        function openMoveModal(itemId) {
-            const g4 = gameState.game4; const buttonsContainer = document.getElementById('ta-buttons'); buttonsContainer.innerHTML = '';
-            g4.tiers.forEach((t, i) => { buttonsContainer.innerHTML += `<button style="background: ${t.color}; color: black; border: 3px solid #000;" onclick="executeMoveItemById('${itemId}', 'tier', ${i})">ย้ายไป: ${t.name}</button>`; });
-            buttonsContainer.innerHTML += `<button style="background: #fff; color: #000; border: 3px solid #000; margin-top: 1rem;" onclick="executeMoveItemById('${itemId}', 'pool', 0)">เอากลับลงกองกลาง</button>`;
-            if (isHostControl()) buttonsContainer.innerHTML += `<button style="background: #ff4757;" onclick="executeDeleteItemById('${itemId}')">🗑️ ลบทิ้ง</button>`;
-            openModal('modal-tier-action');
-        }
-
-        function executeMoveItemById(itemId, destLocation, destIndex) {
-            const g4 = gameState.game4; let itemObj = null;
-            if(!g4.pool) g4.pool = []; g4.tiers.forEach(t => { if(!t.items) t.items = []; });
-            
-            const poolIdx = g4.pool.findIndex(i => i.id === itemId);
-            if (poolIdx > -1) { itemObj = g4.pool.splice(poolIdx, 1)[0]; } 
-            else { for (let t = 0; t < g4.tiers.length; t++) { const tIdx = g4.tiers[t].items.findIndex(i => i.id === itemId); if (tIdx > -1) { itemObj = g4.tiers[t].items.splice(tIdx, 1)[0]; break; } } }
-            if(!itemObj) { closeModal('modal-tier-action'); return; }
-
-            if (destLocation === 'pool') { g4.pool.push(itemObj); } else { g4.tiers[destIndex].items.push(itemObj); }
-            roomRef.child('game4').update({ tiers: g4.tiers, pool: g4.pool }); closeModal('modal-tier-action'); playSfxMove();
-        }
-
-        function executeDeleteItemById(itemId) {
-            const g4 = gameState.game4; if(!g4.pool) g4.pool = []; g4.tiers.forEach(t => { if(!t.items) t.items = []; });
-            const poolIdx = g4.pool.findIndex(i => i.id === itemId);
-            if (poolIdx > -1) { g4.pool.splice(poolIdx, 1); } else { for (let t = 0; t < g4.tiers.length; t++) { const tIdx = g4.tiers[t].items.findIndex(i => i.id === itemId); if (tIdx > -1) { g4.tiers[t].items.splice(tIdx, 1); break; } } }
-            roomRef.child('game4').update({ tiers: g4.tiers, pool: g4.pool }); closeModal('modal-tier-action');
-        }
-
+        function allowDrop(e) { e.preventDefault(); } function dragEnter(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); } function dragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
+        function handleDrop(e, destLocation, destIndex) { e.preventDefault(); e.currentTarget.classList.remove('drag-over'); const itemId = e.dataTransfer.getData('text/plain'); if(!itemId) return; executeMoveItemById(itemId, destLocation, destIndex); document.querySelectorAll('.tier-item-card').forEach(el => el.classList.remove('dragging')); }
+        function openMoveModal(itemId) { const g4 = gameState.game4; const buttonsContainer = document.getElementById('ta-buttons'); buttonsContainer.innerHTML = ''; g4.tiers.forEach((t, i) => { buttonsContainer.innerHTML += `<button class="btn-host" onclick="executeMoveItemById('${itemId}', 'tier', ${i})">ย้ายไป: ${t.name}</button>`; }); buttonsContainer.innerHTML += `<button class="btn-primary" style="margin-top: 1rem;" onclick="executeMoveItemById('${itemId}', 'pool', 0)">เอากลับลงกองกลาง</button>`; if (isHostControl()) buttonsContainer.innerHTML += `<button class="btn-danger" onclick="executeDeleteItemById('${itemId}')">🗑️ ลบทิ้ง</button>`; openModal('modal-tier-action'); }
+        function executeMoveItemById(itemId, destLocation, destIndex) { const g4 = gameState.game4; let itemObj = null; if(!g4.pool) g4.pool = []; g4.tiers.forEach(t => { if(!t.items) t.items = []; }); const poolIdx = g4.pool.findIndex(i => i.id === itemId); if (poolIdx > -1) { itemObj = g4.pool.splice(poolIdx, 1)[0]; } else { for (let t = 0; t < g4.tiers.length; t++) { const tIdx = g4.tiers[t].items.findIndex(i => i.id === itemId); if (tIdx > -1) { itemObj = g4.tiers[t].items.splice(tIdx, 1)[0]; break; } } } if(!itemObj) { closeModal('modal-tier-action'); return; } if (destLocation === 'pool') { g4.pool.push(itemObj); } else { g4.tiers[destIndex].items.push(itemObj); } roomRef.child('game4').update({ tiers: g4.tiers, pool: g4.pool }); closeModal('modal-tier-action'); playSfxMove(); }
+        function executeDeleteItemById(itemId) { const g4 = gameState.game4; if(!g4.pool) g4.pool = []; g4.tiers.forEach(t => { if(!t.items) t.items = []; }); const poolIdx = g4.pool.findIndex(i => i.id === itemId); if (poolIdx > -1) { g4.pool.splice(poolIdx, 1); } else { for (let t = 0; t < g4.tiers.length; t++) { const tIdx = g4.tiers[t].items.findIndex(i => i.id === itemId); if (tIdx > -1) { g4.tiers[t].items.splice(tIdx, 1); break; } } } roomRef.child('game4').update({ tiers: g4.tiers, pool: g4.pool }); closeModal('modal-tier-action'); }
         function moveTierOrder(index, direction) { const g4 = gameState.game4; if (index + direction < 0 || index + direction >= g4.tiers.length) return; const temp = g4.tiers[index]; g4.tiers[index] = g4.tiers[index + direction]; g4.tiers[index + direction] = temp; roomRef.child('game4/tiers').set(g4.tiers); playSfxMove();}
         function clearTierBoard() { if(!isHostControl()) return; if(confirm("ล้างกระดานทั้งหมดจริงดิ?")) startGame('game4'); }
         function openAddTierModal() { document.getElementById('et-title').innerText = "สร้าง Tier"; document.getElementById('et-name').value = "NEW"; document.getElementById('et-color').value = "#ffffff"; document.getElementById('et-id').value = "new"; document.getElementById('et-btn-delete').style.display = 'none'; openModal('modal-edit-tier'); }
@@ -1132,92 +924,39 @@
         function deleteTier() { const i = document.getElementById('et-id').value; if (i === 'new') return; if(confirm('ลบเลยนะ?')) { gameState.game4.tiers.splice(i, 1); roomRef.child('game4/tiers').set(gameState.game4.tiers); closeModal('modal-edit-tier'); } }
 
         // ==========================================
-        // API SEARCH ENGINE (JIKAN)
+        // API SEARCH ENGINE 
         // ==========================================
-        function debounceSearchG2(context) {
-            clearTimeout(typingTimer);
-            const radioType = document.querySelector(`input[name="${context === 'g2_host' ? 'g2-host-type' : 'g2-hb-type'}"]:checked`).value;
-            typingTimer = setTimeout(() => { executeSearch(context, radioType); }, 500);
-        }
-
-        function debounceSearch(context, type, extra) { 
-            clearTimeout(typingTimer); 
-            typingTimer = setTimeout(() => { executeSearch(context, type, extra); }, 500); 
-        }
-
+        function debounceSearchG2(context) { clearTimeout(typingTimer); const radioType = document.querySelector(`input[name="${context === 'g2_host' ? 'g2-host-type' : 'g2-hb-type'}"]:checked`).value; typingTimer = setTimeout(() => { executeSearch(context, radioType); }, 500); }
+        function debounceSearch(context, type, extra) { clearTimeout(typingTimer); typingTimer = setTimeout(() => { executeSearch(context, type, extra); }, 500); }
         async function executeSearch(context, type, extra) {
             let inputId = '', resultsId = '';
-            if (context === 'g1') { inputId = `g1-input-${extra}`; resultsId = `g1-results-${extra}`; }
-            else if (context === 'g2_host') { inputId = 'g2-host-input'; resultsId = 'g2-host-results'; }
-            else if (context === 'g2_hb') { inputId = 'g2-hb-input'; resultsId = 'g2-hb-results'; }
-            else if (context === 'g4') { inputId = 'g4-search-input'; resultsId = 'g4-search-results'; }
-
-            let rawQuery = document.getElementById(inputId).value.trim(); 
-            const resContainer = document.getElementById(resultsId);
-            
+            if (context === 'g1') { inputId = `g1-input-${extra}`; resultsId = `g1-results-${extra}`; } else if (context === 'g2_host') { inputId = 'g2-host-input'; resultsId = 'g2-host-results'; } else if (context === 'g2_hb') { inputId = 'g2-hb-input'; resultsId = 'g2-hb-results'; } else if (context === 'g4') { inputId = 'g4-search-input'; resultsId = 'g4-search-results'; }
+            let rawQuery = document.getElementById(inputId).value.trim(); const resContainer = document.getElementById(resultsId);
             if (rawQuery.length < 2) { resContainer.style.display = 'none'; return; }
-
             let query = translateQuery(rawQuery);
-
             try {
                 if (type === 'anime') {
-                    const response = await fetch(`https://api.jikan.moe/v4/anime?q=${query}&limit=8`); 
-                    const resData = await response.json(); resContainer.innerHTML = '';
-                    if (resData.data && resData.data.length > 0) {
-                        resData.data.forEach(item => {
-                            const title = item.title_english || item.title; const imageUrl = item.images.webp.image_url;
-                            const div = document.createElement('div'); div.className = 'search-item'; div.innerHTML = `<img src="${imageUrl}"><span>${title}</span>`;
-                            
-                            if(context === 'g2_host' || context === 'g2_hb') {
-                                div.onclick = (e) => { e.stopPropagation(); fetchCharactersByAnime(item.mal_id, context, title); };
-                            } else {
-                                div.onclick = (e) => { e.stopPropagation(); handleSelectAPI(context, title, imageUrl, extra); }; 
-                            }
-                            resContainer.appendChild(div);
-                        });
-                        resContainer.style.display = 'block';
-                    } else { resContainer.innerHTML = '<div style="padding:10px;">ไม่พบข้อมูล</div>'; resContainer.style.display = 'block'; }
+                    const response = await fetch(`https://api.jikan.moe/v4/anime?q=${query}&limit=8`); const resData = await response.json(); resContainer.innerHTML = '';
+                    if (resData.data && resData.data.length > 0) { resData.data.forEach(item => { const title = item.title_english || item.title; const imageUrl = item.images.webp.image_url; const div = document.createElement('div'); div.className = 'search-item'; div.innerHTML = `<img src="${imageUrl}"><span>${title}</span>`; if(context === 'g2_host' || context === 'g2_hb') { div.onclick = (e) => { e.stopPropagation(); fetchCharactersByAnime(item.mal_id, context, title); }; } else { div.onclick = (e) => { e.stopPropagation(); handleSelectAPI(context, title, imageUrl, extra); }; } resContainer.appendChild(div); }); resContainer.style.display = 'block'; } else { resContainer.innerHTML = '<div style="padding:10px;">ไม่พบข้อมูล</div>'; resContainer.style.display = 'block'; }
                 } else {
-                    const response = await fetch(`https://api.jikan.moe/v4/characters?q=${query}&limit=8`); 
-                    const resData = await response.json(); resContainer.innerHTML = '';
-                    if (resData.data && resData.data.length > 0) {
-                        resData.data.forEach(item => {
-                            const title = item.name; const imageUrl = item.images.webp.image_url;
-                            const div = document.createElement('div'); div.className = 'search-item'; div.innerHTML = `<img src="${imageUrl}"><span>${title}</span>`;
-                            div.onclick = (e) => { e.stopPropagation(); handleSelectAPI(context, title, imageUrl, extra); }; resContainer.appendChild(div);
-                        });
-                        resContainer.style.display = 'block';
-                    } else { resContainer.innerHTML = '<div style="padding:10px;">ไม่พบข้อมูล</div>'; resContainer.style.display = 'block'; }
+                    const response = await fetch(`https://api.jikan.moe/v4/characters?q=${query}&limit=8`); const resData = await response.json(); resContainer.innerHTML = '';
+                    if (resData.data && resData.data.length > 0) { resData.data.forEach(item => { const title = item.name; const imageUrl = item.images.webp.image_url; const div = document.createElement('div'); div.className = 'search-item'; div.innerHTML = `<img src="${imageUrl}"><span>${title}</span>`; div.onclick = (e) => { e.stopPropagation(); handleSelectAPI(context, title, imageUrl, extra); }; resContainer.appendChild(div); }); resContainer.style.display = 'block'; } else { resContainer.innerHTML = '<div style="padding:10px;">ไม่พบข้อมูล</div>'; resContainer.style.display = 'block'; }
                 }
             } catch (e) { console.error(e); }
         }
 
         async function fetchCharactersByAnime(animeId, context, animeTitle) {
-            const resultsId = context === 'g2_host' ? 'g2-host-results' : 'g2-hb-results';
-            const resContainer = document.getElementById(resultsId);
-            resContainer.innerHTML = `<div style="padding:10px; text-align:center;">กำลังโหลดตัวละครจากเรื่อง...</div>`;
-            resContainer.style.display = 'block'; 
-            
+            const resultsId = context === 'g2_host' ? 'g2-host-results' : 'g2-hb-results'; const resContainer = document.getElementById(resultsId); resContainer.innerHTML = `<div style="padding:10px; text-align:center;">กำลังโหลดตัวละครจากเรื่อง...</div>`; resContainer.style.display = 'block'; 
             try {
-                const response = await fetch(`https://api.jikan.moe/v4/anime/${animeId}/characters`);
-                const resData = await response.json(); resContainer.innerHTML = '';
-                
-                if (resData.data && resData.data.length > 0) {
-                    const chars = resData.data.slice(0, 20); 
-                    chars.forEach(item => {
-                        const title = item.character.name; const imageUrl = item.character.images.webp.image_url;
-                        const div = document.createElement('div'); div.className = 'search-item'; div.innerHTML = `<img src="${imageUrl}"><span>${title}</span>`;
-                        div.onclick = (e) => { e.stopPropagation(); handleSelectAPI(context, title, imageUrl); }; 
-                        resContainer.appendChild(div);
-                    });
-                } else { resContainer.innerHTML = '<div style="padding:10px;">ไม่พบตัวละครในเรื่องนี้</div>'; }
+                const response = await fetch(`https://api.jikan.moe/v4/anime/${animeId}/characters`); const resData = await response.json(); resContainer.innerHTML = '';
+                if (resData.data && resData.data.length > 0) { const chars = resData.data.slice(0, 20); chars.forEach(item => { const title = item.character.name; const imageUrl = item.character.images.webp.image_url; const div = document.createElement('div'); div.className = 'search-item'; div.innerHTML = `<img src="${imageUrl}"><span>${title}</span>`; div.onclick = (e) => { e.stopPropagation(); handleSelectAPI(context, title, imageUrl); }; resContainer.appendChild(div); }); } else { resContainer.innerHTML = '<div style="padding:10px;">ไม่พบตัวละครในเรื่องนี้</div>'; }
             } catch (e) { console.error(e); resContainer.innerHTML = '<div style="padding:10px;">โหลดข้อมูลผิดพลาด</div>';}
         }
 
         function handleSelectAPI(context, title, imageUrl, extra) {
-            if (context === 'g1') { document.getElementById(`g1-results-${extra}`).style.display = 'none'; document.getElementById(`g1-input-${extra}`).value = ''; roomRef.child(`game1/team${extra}`).set({ title, imageUrl, locked: true }); }
-            else if (context === 'g2_host') { document.getElementById('g2-host-results').style.display = 'none'; document.getElementById('g2-host-input').value = ''; roomRef.child('game2/target').set({ title, imageUrl }); } 
-            else if (context === 'g2_hb') { document.getElementById('g2-hb-results').style.display = 'none'; document.getElementById('g2-hb-input').value = ''; roomRef.child(`game2/assignments/${myUser.id}/character`).set({ title, imageUrl }); } 
+            if (context === 'g1') { document.getElementById(`g1-results-${extra}`).style.display = 'none'; document.getElementById(`g1-input-${extra}`).value = ''; roomRef.child(`game1/team${extra}`).set({ title, imageUrl, locked: true }); playSfxMove(); }
+            else if (context === 'g2_host') { document.getElementById('g2-host-results').style.display = 'none'; document.getElementById('g2-host-input').value = ''; roomRef.child('game2/target').set({ title, imageUrl }); playSfxMove(); } 
+            else if (context === 'g2_hb') { document.getElementById('g2-hb-results').style.display = 'none'; document.getElementById('g2-hb-input').value = ''; roomRef.child(`game2/assignments/${myUser.id}/character`).set({ title, imageUrl }); playSfxMove(); } 
             else if (context === 'g4') { document.getElementById('g4-search-results').style.display = 'none'; document.getElementById('g4-search-input').value = ''; addPresetToTier(title, imageUrl); }
         }
         document.addEventListener('click', e => { if(!e.target.closest('.search-container')) { document.querySelectorAll('.search-results').forEach(el => el.style.display = 'none'); } });
