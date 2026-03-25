@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anime Party Games (V16 Bug Fix & Fun SFX)</title>
+    <title>Anime Party Games (V21 Polished & Bug Free)</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -160,7 +160,7 @@
         @keyframes floatHB { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, -12px); } }
         
         /* Modals (BIG UI) */
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 100; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 1000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
         .modal-content { 
             background: var(--panel-bg); color: var(--text-main); padding: 3rem 2rem; 
             border-radius: 24px; text-align: center; max-width: 600px; width: 95%; 
@@ -201,6 +201,8 @@
         
         .tier-items { flex: 1; display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0.5rem; align-items: flex-start; }
         .tier-pool { background: var(--panel-bg); border: 4px dashed var(--border-color); border-radius: 16px; min-height: 120px; padding: 1.5rem; margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 0.8rem; justify-content: center; transition: background 0.2s;}
+        .tier-pool.drag-over { background: var(--bg-color); border-color: var(--accent); }
+        
         .tier-item-card { width: 65px; height: 90px; background: var(--panel-bg); border-radius: 6px; overflow: hidden; cursor: grab; transition: transform 0.1s; position: relative; border: var(--border-heavy); }
         .tier-item-card:active { cursor: grabbing; }
         .tier-item-card img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
@@ -221,7 +223,7 @@
 <body class="no-sound">
 
     <h1 class="main-title">ANIME PARTY</h1>
-    <div class="subtitle">วาไรตี้เกมโชว์ - Tournament Edition</div>
+    <div class="subtitle">วาไรตี้เกมโชว์ - Polished Edition</div>
 
     <div id="screen-profile" class="screen active">
         <button class="settings-btn" onclick="openModal('modal-settings')" title="ตั้งค่าระบบ">⚙️</button>
@@ -352,40 +354,56 @@
     </div>
 
     <div id="screen-game3" class="screen">
-        <div class="header-bar"><h2 style="font-size: 2rem;">ทายเพลง OP/ED</h2><button class="btn-danger btn-return-lobby" onclick="returnToLobby()">⬅ กลับ</button></div>
+        <div class="header-bar"><h2 style="font-size: 2rem;">ทายเพลง OP/ED</h2><button class="btn-danger btn-return-lobby" onclick="returnToLobby()">⬅ กลับ Lobby</button></div>
         <div id="g3-host-controls" class="host-panel" style="display:none;">
             <div id="g3-host-controls-select">
-                <h3>🎬 เลือกลิงก์วิดีโอแบบ Official (ฝังเว็บได้ชัวร์)</h3>
+                <h3>🎬 เลือกลิงก์วิดีโอ</h3>
                 <div class="video-list">
-                    <button class="video-btn" onclick="setOpVideo('ZRtdQ81jPUQ', 'Oshi no Ko (Idol)', true)">Oshi no Ko</button>
-                    <button class="video-btn" onclick="setOpVideo('210R0ozfZcg', 'Mashle (Bling-Bang-Bang-Born)', true)">Mashle</button>
-                    <button class="video-btn" onclick="setOpVideo('5yb2N3pn2ry', 'Jujutsu Kaisen (SPECIALZ)', true)">Jujutsu Kaisen</button>
-                    <button class="video-btn" onclick="setOpVideo('2S4qGKmzBJE', 'AOT (The Rumbling)', true)">AOT</button>
-                    <button class="video-btn" onclick="setOpVideo('tGQQGA3A8gQ', 'Demon Slayer (Gurenge)', true)">Demon Slayer</button>
-                    <button class="video-btn" onclick="setOpVideo('WGmksAQZqCs', 'Frieren (Yuusha)', true)">Frieren</button>
-                    <button class="video-btn" onclick="setOpVideo('fXG_u4T_Mss', 'Evangelion', true)">Evangelion</button>
-                    <button class="video-btn" onclick="setOpVideo('dQw4w9WgXcQ', 'Rickroll (หลอกปั่น)', true)">Rickroll (หลอก)</button>
+                    <button class="video-btn" onclick="setOpVideo('EIVgSuuUT8Q', 'Naruto', true)">Naruto</button>
+                    <button class="video-btn" onclick="setOpVideo('7aMOurgDB-o', 'Tokyo Ghoul', true)">Tokyo Ghoul</button>
+                    <button class="video-btn" onclick="setOpVideo('mpe2OEQfLMs', 'AOT', true)">AOT</button>
                 </div>
-                <div class="input-group" style="margin-top: 1.5rem;"><input type="text" id="g3-custom-id" placeholder="ลิงก์ YouTube Custom"><input type="text" id="g3-custom-title" placeholder="เฉลยชื่อเพลง/เรื่อง" style="margin-top: 0.5rem;"><button class="btn-host" style="margin-top: 0.5rem;" onclick="setCustomOpVideo()">เลือก</button></div>
+                <div class="input-group" style="margin-top: 1rem;">
+                    <input type="text" id="g3-custom-id" placeholder="ลิงก์ YouTube">
+                    <input type="text" id="g3-custom-title" placeholder="เฉลย" style="margin-top: 0.5rem;">
+                    <button class="btn-host" style="margin-top: 0.5rem;" onclick="setCustomOpVideo()">เลือก</button>
+                </div>
             </div>
             <div id="g3-host-staging" style="display:none; margin-top: 1rem; padding: 1.5rem; background: var(--panel-bg); border: var(--border-heavy); border-radius: 12px;">
                 <h3 style="color: var(--accent); text-align: center;">⚙️ ทดสอบวิดีโอ</h3>
-                <div style="width: 100%; height: 200px; background: #000; border-radius: 8px; margin-bottom: 1rem; overflow: hidden; border: 2px solid #000;"><iframe id="g3-preview-iframe" width="100%" height="100%" src="" frameborder="0" allow="autoplay" style="display:none;"></iframe><video id="g3-preview-video" width="100%" height="100%" controls style="display:none; object-fit: cover;"></video></div>
-                <div style="display: flex; gap: 1rem;"><button class="btn-success" style="flex: 2;" onclick="hostPlayVideo()">▶️ ฉายให้ทุกคนดู!</button><button class="btn-danger" style="flex: 1;" onclick="hostCancelVideo()">ยกเลิก</button></div>
+                <div style="width: 100%; height: 200px; background: #000; border-radius: 8px; margin-bottom: 1rem; overflow: hidden; border: 2px solid #000;">
+                    <iframe id="g3-preview-iframe" width="100%" height="100%" src="" frameborder="0" allow="autoplay" style="display:none;"></iframe>
+                    <video id="g3-preview-video" width="100%" height="100%" controls style="display:none; object-fit: cover;"></video>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button class="btn-success" style="flex: 2;" onclick="hostPlayVideo()">▶️ ฉายให้ทุกคนดู!</button>
+                    <button class="btn-danger" style="flex: 1;" onclick="hostCancelVideo()">ยกเลิก</button>
+                </div>
             </div>
             <div id="g3-judge-panel" style="display:none; margin-top: 1.5rem; padding: 1.5rem; background: var(--panel-bg); border: var(--border-heavy); border-radius: 12px;">
-                <h3 style="color: var(--team-a); text-align: center; font-size: 2rem;" id="g3-who-buzzed-host">มีคนกดตอบ!</h3>
-                <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1rem;"><button class="btn-success" style="font-size: 1.5rem;" onclick="hostJudgeBuzzer(true)">✅ ถูก (เฉลย)</button><button class="btn-danger" style="font-size: 1.5rem;" onclick="hostJudgeBuzzer(false)">❌ ผิด (แย่งต่อ)</button></div>
+                <h3 style="color: var(--team-a); text-align: center; font-size: 1.8rem;" id="g3-who-buzzed-host">มีคนกดตอบ!</h3>
+                <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1rem;">
+                    <button class="btn-success" onclick="hostJudgeBuzzer(true)">✅ ถูก (เฉลย)</button>
+                    <button class="btn-danger" onclick="hostJudgeBuzzer(false)">❌ ผิด (แย่งต่อ)</button>
+                </div>
             </div>
             <button id="g3-btn-reveal" class="btn-reveal" style="display:none;" onclick="hostRevealGame('game3')">🎉 ข้ามไปเฉลยเลย</button>
         </div>
-        <div class="card-display" style="max-width: 900px; margin: 1rem auto; padding: 0;">
-            <h3 id="g3-status" style="margin: 2rem; font-size: 2rem;">รอแอดมินเปิดแผ่น...</h3>
-            <div id="g3-video-container" style="width: 100%; height: 500px; display: none; position: relative; background: #000; border-radius: 12px; overflow: hidden;"><div style="position:absolute; top:0; left:0; right:0; bottom:0; z-index: 5;"></div><iframe id="g3-iframe" width="100%" height="100%" src="" frameborder="0" allow="autoplay; encrypted-media" style="display: none;"></iframe><video id="g3-html-video" width="100%" height="100%" autoplay loop style="display: none; object-fit: cover;"></video></div>
-            <div id="g3-answer-display" style="position: absolute; bottom: 0; left: 0; right: 0; background: var(--accent); border-top: var(--border-heavy); padding: 1.5rem; display: none; z-index: 10;"><p style="color:#000; margin:0; font-weight:800; font-size: 1.5rem;">คำตอบคือ:</p><h1 id="g3-title" style="color: #000; margin:0; font-size: 3rem;">Title</h1></div>
+        <div class="card-display" style="max-width: 800px; margin: 1rem auto; padding: 0;">
+            <h3 id="g3-status" style="margin: 2rem; font-size: 1.5rem;">รอแอดมินเปิดแผ่น...</h3>
+            <div id="g3-video-container" style="width: 100%; height: 400px; display: none; position: relative; background: #000; border-radius: 12px; overflow: hidden;">
+                <div style="position:absolute; top:0; left:0; right:0; bottom:0; z-index: 5;"></div>
+                <iframe id="g3-iframe" width="100%" height="100%" src="" frameborder="0" allow="autoplay; encrypted-media" style="display: none;"></iframe>
+                <video id="g3-html-video" width="100%" height="100%" autoplay loop style="display: none; object-fit: cover;"></video>
+            </div>
+            <div id="g3-answer-display" style="position: absolute; bottom: 0; left: 0; right: 0; background: var(--accent); border-top: var(--border-heavy); padding: 1.5rem; display: none; z-index: 10;">
+                <p style="color:#000; margin:0; font-weight:800;">คำตอบคือ:</p>
+                <h1 id="g3-title" style="color: #000; margin:0; font-size: 2.5rem; text-shadow: none;">Title</h1>
+            </div>
         </div>
         <div id="g3-player-buzzer-area" style="display:none; text-align: center; margin-top: 1.5rem;">
-            <h3 id="g3-buzzer-status" style="font-size: 2rem; color: var(--accent); margin-bottom: 0.5rem; height: 35px;"></h3><button id="btn-buzz" class="buzzer-btn" onclick="buzzIn()">ตบ!</button>
+            <h3 id="g3-buzzer-status" style="font-size: 1.5rem; color: var(--accent); margin-bottom: 0.5rem; height: 35px;"></h3>
+            <button id="btn-buzz" class="buzzer-btn" onclick="buzzIn()">ตบ!</button>
         </div>
     </div>
 
@@ -393,56 +411,55 @@
         <div class="header-bar"><h2 style="font-size: 2rem;">จัด Tier List</h2><button class="btn-danger btn-return-lobby" onclick="returnToLobby()">⬅ กลับ</button></div>
         <div style="background: var(--panel-bg); border: var(--border-heavy); padding: 1.5rem; border-radius: 16px; margin-bottom: 1.5rem;">
             <div style="display: flex; flex-wrap: wrap; gap: 1.5rem;">
-                <div style="flex: 1; min-width: 350px;">
+                <div style="flex: 1; min-width: 250px;">
                     <h3 style="margin-bottom: 0.8rem; border-bottom: 2px dashed var(--border-color); padding-bottom: 0.5rem;">➕ กองทัพการ์ตูนฮิต</h3>
-                    <div class="preset-grid" style="max-height: 250px;">
+                    <div class="preset-grid">
                         <div class="preset-btn" onclick="addPresetToTier('โดราเอมอน', 'https://upload.wikimedia.org/wikipedia/en/c/c8/Doraemon_volume_1_cover.jpg')">โดราเอมอน</div>
                         <div class="preset-btn" onclick="addPresetToTier('ชินจัง', 'https://upload.wikimedia.org/wikipedia/en/e/e0/Crayon_Shin-chan.png')">ชินจัง</div>
                         <div class="preset-btn" onclick="addPresetToTier('นารูโตะ', 'https://cdn.myanimelist.net/images/anime/13/17405.jpg')">Naruto</div>
-                        <div class="preset-btn" onclick="addPresetToTier('วันพีซ', 'https://cdn.myanimelist.net/images/anime/6/73245.jpg')">One Piece</div>
-                        <div class="preset-btn" onclick="addPresetToTier('โคนัน', 'https://upload.wikimedia.org/wikipedia/en/c/c6/Case_Closed_Volume_1.jpg')">โคนัน</div>
-                        <div class="preset-btn" onclick="addPresetToTier('ดาบพิฆาตอสูร', 'https://cdn.myanimelist.net/images/anime/1286/99889.jpg')">ดาบพิฆาตอสูร</div>
-                        <div class="preset-btn" onclick="addPresetToTier('มหาเวทย์ผนึกมาร', 'https://cdn.myanimelist.net/images/anime/1171/109222.jpg')">JJK</div>
-                        <div class="preset-btn" onclick="addPresetToTier('ไททัน', 'https://cdn.myanimelist.net/images/anime/10/47347.jpg')">AOT</div>
-                        <div class="preset-btn" onclick="addPresetToTier('สปาย แฟมิลี่', 'https://cdn.myanimelist.net/images/anime/1441/122795.jpg')">Spy x Family</div>
-                        <div class="preset-btn" onclick="addPresetToTier('บลีช', 'https://cdn.myanimelist.net/images/anime/3/40451.jpg')">Bleach</div>
-                        <div class="preset-btn" onclick="addPresetToTier('ฟรีเรน', 'https://cdn.myanimelist.net/images/anime/1015/138006.jpg')">Frieren</div>
-                        <div class="preset-btn" onclick="addPresetToTier('เกิดใหม่เป็นสไลม์', 'https://cdn.myanimelist.net/images/anime/1171/109222.jpg')">Slime</div>
-                        <div class="preset-btn" onclick="addPresetToTier('เกิดใหม่ลูกโอชิ', 'https://cdn.myanimelist.net/images/anime/1812/134736.jpg')">Oshi no Ko</div>
-                        <div class="preset-btn" onclick="addPresetToTier('โจโจ้', 'https://cdn.myanimelist.net/images/anime/3/40409.jpg')">Jojo</div>
-                        <div class="preset-btn" onclick="addPresetToTier('ไฮคิว', 'https://cdn.myanimelist.net/images/anime/7/76014.jpg')">Haikyuu</div>
-                        <div class="preset-btn" onclick="addPresetToTier('มายฮีโร่', 'https://cdn.myanimelist.net/images/anime/10/78745.jpg')">MHA</div>
-                        <div class="preset-btn" onclick="addPresetToTier('กินทามะ', 'https://cdn.myanimelist.net/images/anime/10/73274.jpg')">Gintama</div>
-                        <div class="preset-btn" onclick="addPresetToTier('แฟรี่เทล', 'https://cdn.myanimelist.net/images/anime/5/18179.jpg')">Fairy Tail</div>
-                        <div class="preset-btn" onclick="addPresetToTier('มูโชคุก', 'https://cdn.myanimelist.net/images/anime/1530/117776.jpg')">Mushoku</div>
-                        <div class="preset-btn" onclick="addPresetToTier('บลูล็อค', 'https://cdn.myanimelist.net/images/anime/1258/126929.jpg')">Blue Lock</div>
                     </div>
                 </div>
                 <div style="flex: 1; min-width: 250px;">
                     <h3 style="margin-bottom: 0.8rem; border-bottom: 2px dashed var(--border-color); padding-bottom: 0.5rem;">🔍 ค้นหา (พิมพ์ไทยได้)</h3>
-                    <div class="search-container"><input type="text" id="g4-search-input" placeholder="ค้นหา..." oninput="debounceSearch('g4', 'anime')"><div class="search-results" id="g4-search-results"></div></div>
+                    <div class="search-container">
+                        <input type="text" id="g4-search-input" placeholder="พิมพ์ชื่อเรื่อง..." oninput="debounceSearch('g4', 'anime')">
+                        <div class="search-results" id="g4-search-results"></div>
+                    </div>
                 </div>
             </div>
         </div>
         <div style="margin-top: 1.5rem; display: flex; justify-content: space-between; align-items: center;" id="g4-host-actions">
-            <div><button class="btn-success" onclick="openAddTierModal()">+ เพิ่ม Tier</button><button class="btn-danger" style="margin-left: 1rem;" onclick="clearTierBoard()">🗑️ ล้างกระดาน</button></div>
-            <button class="btn-host" onclick="captureTierList()">📸 แคปภาพกระดาน</button>
+            <div>
+                <button class="btn-success" style="width: auto; font-size: 1rem;" onclick="openAddTierModal()">+ เพิ่ม Tier</button>
+                <button class="btn-danger" style="width: auto; margin-left: 1rem; font-size: 1rem;" onclick="clearTierBoard()">🗑️ ล้างกระดาน</button>
+            </div>
+            <button class="btn-host" style="width: auto; font-size: 1.2rem; display: flex; align-items: center; gap: 8px;" onclick="captureTierList()">📸 แคปภาพกระดาน</button>
         </div>
         <div class="tier-board" id="g4-tier-board" style="padding: 15px; background: var(--bg-color); border-radius: 16px;"></div>
-        <h3 style="margin-top: 2rem; text-align: center;">👇 กองกลาง (ลากขึ้นไปใส่) 👇</h3>
+        <h3 style="margin-top: 2rem; text-align: center;">👇 กองกลาง (ลากขึ้นไปใส่ได้เลย) 👇</h3>
         <div class="tier-pool" id="g4-tier-pool" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'pool', 0)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)"></div>
     </div>
-
 
     <div id="modal-settings" class="modal-overlay">
         <div class="modal-content">
             <h2 style="font-size: 2rem; margin-bottom: 1.5rem;">ตั้งค่าระบบ</h2>
-            <div class="toggle-switch"><span style="font-weight: bold; font-size: 1.5rem;">🔊 เสียง & ดนตรี (SFX)</span><input type="checkbox" id="set-sound" style="width:30px; height:30px;" onchange="saveSettings()"></div>
-            <div class="toggle-switch"><span style="font-weight: bold; font-size: 1.5rem;">✨ แอนิเมชัน</span><input type="checkbox" id="set-anim" style="width:30px; height:30px;" onchange="saveSettings()"></div>
-            <div class="toggle-switch"><span style="font-weight: bold; font-size: 1.5rem;">🌟 ลายพื้นหลัง</span><input type="checkbox" id="set-vfx" style="width:30px; height:30px;" onchange="saveSettings()"></div>
+            <div class="toggle-switch">
+                <span style="font-weight: bold; font-size: 1.5rem;">🔊 เสียงประกอบ (SFX)</span>
+                <input type="checkbox" id="set-sound" style="width:30px; height:30px;" onchange="saveSettings()">
+            </div>
+            <div class="toggle-switch">
+                <span style="font-weight: bold; font-size: 1.5rem;">✨ แอนิเมชันเคลื่อนไหว</span>
+                <input type="checkbox" id="set-anim" style="width:30px; height:30px;" onchange="saveSettings()">
+            </div>
+            <div class="toggle-switch">
+                <span style="font-weight: bold; font-size: 1.5rem;">🌟 ลายจุดพื้นหลัง</span>
+                <input type="checkbox" id="set-vfx" style="width:30px; height:30px;" onchange="saveSettings()">
+            </div>
             <div class="toggle-switch" style="justify-content: center; border-bottom: none; margin-top: 2rem;">
                 <label style="display: flex; align-items: center; gap: 15px; cursor: pointer; font-size: 1.5rem; font-weight: 900;">
-                    <span>สว่าง (Light)</span><input type="checkbox" id="set-theme" style="width:30px; height:30px;" onchange="toggleTheme()"><span>มืด (Dark)</span>
+                    <span>สว่าง (Light)</span>
+                    <input type="checkbox" id="set-theme" style="width:30px; height:30px;" onchange="toggleTheme()">
+                    <span>มืด (Dark)</span>
                 </label>
             </div>
             <button class="btn-primary" style="margin-top: 2.5rem; font-size: 1.5rem; padding: 1rem 3rem;" onclick="closeModal('modal-settings')">บันทึก & ปิด</button>
@@ -452,7 +469,7 @@
     <div id="modal-make-guess" class="modal-overlay">
         <div class="modal-content" style="max-width: 800px;">
             <h1 style="font-size: 3.5rem; color: var(--accent);">ทายชื่อตัวละคร!</h1>
-            <p style="font-size: 1.5rem; color: var(--text-muted);">(ระวังตอบผิดเสียเทิร์นนะจ๊ะ)</p>
+            <p style="font-size: 1.5rem; color: var(--text-muted);">(ระวังเพื่อนโหวตผิดนะจ๊ะ)</p>
             <input type="text" id="guess-input" placeholder="ฉันคิดว่าฉันคือ..." style="margin-top: 2rem; text-align: center; font-size: 2rem; padding: 1.5rem;">
             <div class="vote-buttons" style="margin-top: 3rem;">
                 <button class="btn-primary" style="font-size: 2rem; padding: 1rem 3rem;" onclick="submitGuess()">💥 ส่งคำตอบ!</button>
@@ -499,7 +516,7 @@
             <h1 style="font-size: 6rem; margin: 0;">🎉</h1>
             <h1 id="winner-name" style="color: #f59e0b; font-size: 3.5rem; text-shadow: 2px 2px 0 #000;">??? ชนะ!</h1>
             <h2 style="margin-top: 1rem;">ตัวจริงคือ: <strong id="winner-char" style="color: var(--accent); text-shadow: 1px 1px 0 #000;">???</strong></h2>
-            <button class="btn-primary" style="margin-top: 2rem; font-size: 1.5rem;" onclick="closeModal('modal-winner')">ปิดหน้าต่าง (เล่นคนอื่นต่อ)</button>
+            <button class="btn-primary" style="margin-top: 2rem; font-size: 1.5rem; padding: 1rem 3rem;" onclick="closeModal('modal-winner')">ปิดหน้าต่าง (เล่นต่อ)</button>
         </div>
     </div>
 
@@ -511,11 +528,17 @@
             <div class="input-group" style="margin-top: 1rem;"><label>ชื่อ Tier</label><input type="text" id="et-name"></div>
             <div class="input-group"><label>สีพื้นหลัง</label><input type="color" id="et-color" value="#ff0000"></div>
             <input type="hidden" id="et-id">
-            <div class="vote-buttons"><button class="btn-primary" onclick="saveTierSetting()">บันทึก</button><button class="btn-danger" id="et-btn-delete" onclick="deleteTier()">ลบ Tier</button></div>
+            <div class="vote-buttons">
+                <button class="btn-primary" onclick="saveTierSetting()">บันทึก</button>
+                <button class="btn-danger" id="et-btn-delete" onclick="deleteTier()">ลบ Tier</button>
+            </div>
         </div>
     </div>
 
     <script>
+        // ==========================================
+        // THAI TRANSLATION MAP
+        // ==========================================
         const thaiToEngMap = {
             "นารูโตะ": "Naruto", "วันพีซ": "One Piece", "วันพีช": "One Piece", "โดราเอมอน": "Doraemon", "โดเรม่อน": "Doraemon",
             "โคนัน": "Detective Conan", "ดาบพิฆาตอสูร": "Demon Slayer", "คิเมทสึ": "Kimetsu no Yaiba",
@@ -543,50 +566,145 @@
             "โค้ดกีอัส": "Code Geass", "สเตนส์เกท": "Steins;Gate", "โนเกมโนไลฟ์": "No Game No Life",
             "ดิจิมอน": "Digimon", "ดิจิม่อน": "Digimon"
         };
-        function translateQuery(q) { let res = q; for(let key in thaiToEngMap) { if(q.includes(key) || q === key) { res = thaiToEngMap[key]; break; } } return res; }
+        
+        function translateQuery(q) { 
+            let res = q; 
+            for(let key in thaiToEngMap) { 
+                if(q.includes(key) || q === key) { 
+                    res = thaiToEngMap[key]; 
+                    break; 
+                } 
+            } 
+            return res; 
+        }
 
+        // ==========================================
+        // AUDIO SYNTHESIZER
+        // ==========================================
         let userSettings = { sound: true, vfx: true, anim: true, isDark: false };
         let audioCtx = null;
         
-        function initAudio() { if(!audioCtx && userSettings.sound) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume(); }
+        function initAudio() { 
+            if(!audioCtx && userSettings.sound) { 
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)(); 
+            } 
+            if(audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume(); 
+            }
+        }
+        
         function playTone(freq, type, duration, vol=0.1) {
             if(!userSettings.sound) return;
-            initAudio(); if(!audioCtx) return;
-            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
-            osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            gain.gain.setValueAtTime(vol, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
-            osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + duration);
+            initAudio(); 
+            if(!audioCtx) return;
+            const osc = audioCtx.createOscillator(); 
+            const gain = audioCtx.createGain();
+            osc.type = type; 
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            gain.gain.setValueAtTime(vol, audioCtx.currentTime); 
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+            osc.connect(gain); 
+            gain.connect(audioCtx.destination); 
+            osc.start(); 
+            osc.stop(audioCtx.currentTime + duration);
         }
         
         // SFX Library
-        function playSfxCorrect() { playTone(523.25, 'sine', 0.1, 0.2); setTimeout(()=>playTone(659.25, 'sine', 0.2, 0.2), 100); setTimeout(()=>playTone(783.99, 'sine', 0.3, 0.2), 200); }
-        function playSfxWrong() { playTone(150, 'sawtooth', 0.3, 0.3); setTimeout(()=>playTone(100, 'sawtooth', 0.5, 0.3), 150); }
-        function playSfxMove() { playTone(400, 'triangle', 0.1, 0.05); }
+        function playSfxCorrect() { 
+            playTone(523.25, 'sine', 0.1, 0.2); 
+            setTimeout(()=>playTone(659.25, 'sine', 0.2, 0.2), 100); 
+            setTimeout(()=>playTone(783.99, 'sine', 0.3, 0.2), 200); 
+        }
+        function playSfxWrong() { 
+            playTone(150, 'sawtooth', 0.3, 0.3); 
+            setTimeout(()=>playTone(100, 'sawtooth', 0.5, 0.3), 150); 
+        }
+        function playSfxMove() { 
+            playTone(400, 'triangle', 0.1, 0.05); 
+        }
         function playSfxWinEpic() { 
-            if(!userSettings.sound) return; initAudio(); if(!audioCtx) return;
+            if(!userSettings.sound) return; 
+            initAudio(); 
+            if(!audioCtx) return;
             setTimeout(()=>playTone(523.25, 'square', 0.1, 0.1), 0);
             setTimeout(()=>playTone(659.25, 'square', 0.1, 0.1), 150);
             setTimeout(()=>playTone(783.99, 'square', 0.1, 0.1), 300);
             setTimeout(()=>playTone(1046.50, 'square', 0.4, 0.1), 450);
         }
         function playSfxAlert() { 
-            if(!userSettings.sound) return; initAudio(); if(!audioCtx) return;
-            playTone(880, 'sine', 0.1, 0.1); setTimeout(()=>playTone(1046.50, 'sine', 0.2, 0.1), 100); 
+            if(!userSettings.sound) return; 
+            initAudio(); 
+            if(!audioCtx) return;
+            playTone(880, 'sine', 0.1, 0.1); 
+            setTimeout(()=>playTone(1046.50, 'sine', 0.2, 0.1), 100); 
         }
 
-        function loadSettings() { const saved = localStorage.getItem('animePartySettingsV16'); if (saved) { userSettings = { ...userSettings, ...JSON.parse(saved) }; } document.getElementById('set-sound').checked = userSettings.sound; document.getElementById('set-anim').checked = userSettings.anim; document.getElementById('set-vfx').checked = userSettings.vfx; document.getElementById('set-theme').checked = userSettings.isDark; applySettingsToUI(); }
-        function saveSettings() { userSettings.sound = document.getElementById('set-sound').checked; userSettings.anim = document.getElementById('set-anim').checked; userSettings.vfx = document.getElementById('set-vfx').checked; if(userSettings.sound) initAudio(); localStorage.setItem('animePartySettingsV16', JSON.stringify(userSettings)); applySettingsToUI(); }
-        function toggleTheme() { userSettings.isDark = document.getElementById('set-theme').checked; localStorage.setItem('animePartySettingsV16', JSON.stringify(userSettings)); applySettingsToUI(); }
-        function applySettingsToUI() { if(userSettings.isDark) document.body.classList.add('dark-mode'); else document.body.classList.remove('dark-mode'); if(userSettings.anim) document.body.classList.remove('no-anim'); else document.body.classList.add('no-anim'); if(userSettings.vfx) document.body.classList.remove('no-vfx'); else document.body.classList.add('no-vfx'); }
+        // ==========================================
+        // SETTINGS LOGIC
+        // ==========================================
+        function loadSettings() { 
+            const saved = localStorage.getItem('animePartySettingsV21'); 
+            if (saved) { 
+                userSettings = { ...userSettings, ...JSON.parse(saved) }; 
+            } 
+            document.getElementById('set-sound').checked = userSettings.sound; 
+            document.getElementById('set-anim').checked = userSettings.anim; 
+            document.getElementById('set-vfx').checked = userSettings.vfx; 
+            document.getElementById('set-theme').checked = userSettings.isDark; 
+            applySettingsToUI(); 
+        }
+        
+        function saveSettings() { 
+            userSettings.sound = document.getElementById('set-sound').checked; 
+            userSettings.anim = document.getElementById('set-anim').checked; 
+            userSettings.vfx = document.getElementById('set-vfx').checked; 
+            if(userSettings.sound) initAudio(); 
+            localStorage.setItem('animePartySettingsV21', JSON.stringify(userSettings)); 
+            applySettingsToUI(); 
+        }
+        
+        function toggleTheme() { 
+            userSettings.isDark = document.getElementById('set-theme').checked; 
+            localStorage.setItem('animePartySettingsV21', JSON.stringify(userSettings)); 
+            applySettingsToUI(); 
+        }
+        
+        function applySettingsToUI() { 
+            if(userSettings.isDark) document.body.classList.add('dark-mode'); 
+            else document.body.classList.remove('dark-mode'); 
+            
+            if(userSettings.anim) document.body.classList.remove('no-anim'); 
+            else document.body.classList.add('no-anim'); 
+            
+            if(userSettings.vfx) document.body.classList.remove('no-vfx'); 
+            else document.body.classList.add('no-vfx'); 
+        }
 
-        const firebaseConfig = { apiKey: "AIzaSyAbYF0YybYOHCcNwbrayQEwx6DL_EBHSeo", authDomain: "game-97e90.firebaseapp.com", databaseURL: "https://game-97e90-default-rtdb.firebaseio.com", projectId: "game-97e90", storageBucket: "game-97e90.firebasestorage.app", messagingSenderId: "762122867477", appId: "1:762122867477:web:bdee0526c67b84e3540f1c" };
-        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+        // ==========================================
+        // FIREBASE SETUP
+        // ==========================================
+        const firebaseConfig = { 
+            apiKey: "AIzaSyAbYF0YybYOHCcNwbrayQEwx6DL_EBHSeo", 
+            authDomain: "game-97e90.firebaseapp.com", 
+            databaseURL: "https://game-97e90-default-rtdb.firebaseio.com", 
+            projectId: "game-97e90", 
+            storageBucket: "game-97e90.firebasestorage.app", 
+            messagingSenderId: "762122867477", 
+            appId: "1:762122867477:web:bdee0526c67b84e3540f1c" 
+        };
+        
+        if (!firebase.apps.length) { 
+            firebase.initializeApp(firebaseConfig); 
+        }
         const db = firebase.database();
 
         let myUser = { id: 'u_' + Math.floor(Math.random() * 1000000), name: '', avatar: '', role: 'player', team: 'A' };
-        let currentRoomId = null; let roomRef = null; let playersRef = null; let gameState = { players: {} }; let typingTimer;
-
-        // LOCAL STATE FOR V16 BUGS
+        let currentRoomId = null; 
+        let roomRef = null; 
+        let playersRef = null; 
+        let gameState = { players: {} }; 
+        let typingTimer;
+        
         let shownWinners = {}; 
         let myTurnAlertPlayed = false;
 
@@ -594,29 +712,90 @@
         const isPlaying = () => ['player', 'host_player'].includes(myUser.role);
         const isAdmin = () => myUser.role === 'admin';
 
-        function switchScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        function generateRandomAvatar() { const seed = Math.random().toString(36).substr(2, 8); const url = `https://api.dicebear.com/7.x/micah/svg?seed=${seed}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffdfbf,ffd5dc`; myUser.avatar = url; document.getElementById('my-avatar-img').src = url; }
+        // ==========================================
+        // UI & PROFILE
+        // ==========================================
+        function switchScreen(id) { 
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+            document.getElementById(id).classList.add('active'); 
+        }
+        
+        function openModal(id) { 
+            if(userSettings.sound) initAudio();
+            document.getElementById(id).style.display = 'flex'; 
+        }
+        
+        function closeModal(id) { 
+            document.getElementById(id).style.display = 'none'; 
+        }
+        
+        function generateRandomAvatar() { 
+            const seed = Math.random().toString(36).substr(2, 8); 
+            const url = `https://api.dicebear.com/7.x/micah/svg?seed=${seed}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffdfbf,ffd5dc`; 
+            myUser.avatar = url; 
+            document.getElementById('my-avatar-img').src = url; 
+        }
 
-        window.onload = () => { loadSettings(); const saved = localStorage.getItem('animePartyV16'); if (saved) { const d = JSON.parse(saved); myUser.name = d.name || ''; myUser.avatar = d.avatar || ''; } if (!myUser.avatar) generateRandomAvatar(); else document.getElementById('my-avatar-img').src = myUser.avatar; document.getElementById('my-name').value = myUser.name; };
+        window.onload = () => { 
+            loadSettings(); 
+            const saved = localStorage.getItem('animePartyV21'); 
+            if (saved) { 
+                const d = JSON.parse(saved); 
+                myUser.name = d.name || ''; 
+                myUser.avatar = d.avatar || ''; 
+            } 
+            if (!myUser.avatar) generateRandomAvatar(); 
+            else document.getElementById('my-avatar-img').src = myUser.avatar; 
+            document.getElementById('my-name').value = myUser.name; 
+        };
 
-        function saveProfileAndGoToJoin() { if(userSettings.sound) initAudio(); const n = document.getElementById('my-name').value.trim(); if (!n) return alert('ตั้งชื่อก่อนครับ!'); myUser.name = n; localStorage.setItem('animePartyV16', JSON.stringify({ name: n, avatar: myUser.avatar })); switchScreen('screen-join'); }
+        function saveProfileAndGoToJoin() { 
+            if(userSettings.sound) initAudio(); 
+            const n = document.getElementById('my-name').value.trim(); 
+            if (!n) return alert('ตั้งชื่อก่อนครับ!'); 
+            myUser.name = n; 
+            localStorage.setItem('animePartyV21', JSON.stringify({ name: n, avatar: myUser.avatar })); 
+            switchScreen('screen-join'); 
+        }
 
+        // ==========================================
+        // LOBBY LOGIC
+        // ==========================================
         function joinRoom() {
             if(userSettings.sound) initAudio();
-            const rId = document.getElementById('room-input').value.trim(); if (!rId) return alert('ใส่รหัสห้องด้วยครับ!'); currentRoomId = rId; myUser.role = document.getElementById('role-input').value; myUser.team = 'A';
-            roomRef = db.ref(`rooms/${currentRoomId}`); playersRef = db.ref(`rooms/${currentRoomId}/players`);
-            const myRef = playersRef.child(myUser.id); myRef.set(myUser); myRef.onDisconnect().remove();
-            document.getElementById('lobby-room-id').innerText = currentRoomId; document.getElementById('host-lobby-panel').style.display = isHostControl() ? 'block' : 'none'; document.getElementById('team-selector').style.display = isPlaying() ? 'flex' : 'none';
+            const rId = document.getElementById('room-input').value.trim(); 
+            if (!rId) return alert('ใส่รหัสห้องด้วยครับ!'); 
+            
+            currentRoomId = rId; 
+            myUser.role = document.getElementById('role-input').value; 
+            myUser.team = 'A';
+            
+            roomRef = db.ref(`rooms/${currentRoomId}`); 
+            playersRef = db.ref(`rooms/${currentRoomId}/players`);
+            
+            const myRef = playersRef.child(myUser.id); 
+            myRef.set(myUser); 
+            myRef.onDisconnect().remove();
+            
+            document.getElementById('lobby-room-id').innerText = currentRoomId; 
+            document.getElementById('host-lobby-panel').style.display = isHostControl() ? 'block' : 'none'; 
+            document.getElementById('team-selector').style.display = isPlaying() ? 'flex' : 'none';
             listenToRoom();
         }
 
-        function leaveRoom() { if (playersRef) playersRef.child(myUser.id).remove(); if (roomRef) roomRef.off(); currentRoomId = null; switchScreen('screen-join'); }
+        function leaveRoom() { 
+            if (playersRef) playersRef.child(myUser.id).remove(); 
+            if (roomRef) roomRef.off(); 
+            currentRoomId = null; 
+            switchScreen('screen-join'); 
+        }
 
         function listenToRoom() {
             roomRef.on('value', snap => {
-                const data = snap.val() || { players: {} }; gameState = data; renderLobbyPlayers(data.players || {});
+                const data = snap.val() || { players: {} }; 
+                gameState = data; 
+                renderLobbyPlayers(data.players || {});
+                
                 if (!data.state || data.state === 'lobby') switchScreen('screen-lobby');
                 else if (data.state === 'game1') handleGame1Update(data);
                 else if (data.state.startsWith('game2')) handleGame2Update(data);
@@ -626,63 +805,182 @@
         }
 
         function renderLobbyPlayers(pObj) {
-            const c = document.getElementById('players-list-lobby'); c.innerHTML = ''; let count = 0;
+            const c = document.getElementById('players-list-lobby'); 
+            c.innerHTML = ''; 
+            let count = 0;
+            
             Object.values(pObj).forEach(p => {
-                count++; let borderClass = 'var(--border-color)'; let badgeHtml = '';
-                if(p.role === 'admin') { badgeHtml = '<span class="player-role-badge admin-badge">👁️ Admin</span>'; }
-                else if(p.role === 'host_player') { badgeHtml = '<span class="player-role-badge host-badge">👑 Host</span>'; }
-                else { badgeHtml = `<span class="player-role-badge">Team ${p.team||'A'}</span>`; borderClass = p.team === 'A' ? 'var(--team-a)' : 'var(--team-b)'; }
+                count++; 
+                let borderClass = 'var(--border-color)'; 
+                let badgeHtml = '';
+                
+                if(p.role === 'admin') { 
+                    badgeHtml = '<span class="player-role-badge admin-badge">👁️ Admin</span>'; 
+                }
+                else if(p.role === 'host_player') { 
+                    badgeHtml = '<span class="player-role-badge host-badge">👑 Host</span>'; 
+                }
+                else { 
+                    badgeHtml = `<span class="player-role-badge">Team ${p.team||'A'}</span>`; 
+                    borderClass = p.team === 'A' ? 'var(--team-a)' : 'var(--team-b)'; 
+                }
                 c.innerHTML += `<div class="player-card" style="border-color: ${borderClass};">${badgeHtml}<img class="avatar" src="${p.avatar}"><div class="player-name">${p.name}</div></div>`;
             });
             document.getElementById('player-count').innerText = count;
         }
 
-        function changeMyTeam(teamStr) { if(!isPlaying()) return; myUser.team = teamStr; playersRef.child(myUser.id).update({ team: teamStr }); playSfxMove(); }
-        function returnToLobby() { if(isHostControl()) roomRef.update({ state: 'lobby', game2: null }); }
+        function changeMyTeam(teamStr) { 
+            if(!isPlaying()) return; 
+            myUser.team = teamStr; 
+            playersRef.child(myUser.id).update({ team: teamStr }); 
+            playSfxMove(); 
+        }
+        
+        function returnToLobby() { 
+            if(isHostControl()) roomRef.update({ state: 'lobby', game2: null }); 
+        }
 
         function startGame(game, mode) {
-            shownWinners = {}; myTurnAlertPlayed = false; // Reset local state
+            shownWinners = {}; 
+            myTurnAlertPlayed = false; 
             let updates = { state: game === 'game2' ? `game2_${mode}` : game };
+            
             if (game === 'game1') updates.game1 = { teamA: null, teamB: null, revealed: false };
             if (game === 'game2') updates.game2 = { mode: mode, target: null, revealed: false, assignments: mode==='headband'? generateAssignments(gameState.players):null, voteData: null, winners: {}, currentTurn: null };
             if (game === 'game3') updates.game3 = { videoId: '', isYoutube: true, title: '', locked: false, isPlaying: false, revealed: false, buzzerId: null };
             if (game === 'game4') updates.game4 = { tiers: [ {id:'t1', name:'S', color:'#ef4444', items:[]}, {id:'t2', name:'A', color:'#f97316', items:[]}, {id:'t3', name:'B', color:'#f59e0b', items:[]}, {id:'t4', name:'C', color:'#eab308', items:[]}, {id:'t5', name:'D', color:'#22c55e', items:[]} ], pool: [] };
-            roomRef.update(updates); playSfxCorrect();
+            
+            roomRef.update(updates); 
+            playSfxCorrect();
         }
 
-        function syncReturnButtons() { document.querySelectorAll('.btn-return-lobby').forEach(btn => { btn.style.display = isHostControl() ? 'inline-block' : 'none'; }); }
+        function syncReturnButtons() { 
+            document.querySelectorAll('.btn-return-lobby').forEach(btn => { 
+                btn.style.display = isHostControl() ? 'inline-block' : 'none'; 
+            }); 
+        }
 
-        // === GAME 1 ===
+        // ==========================================
+        // GAME 1 LOGIC (Secret Anime Guess)
+        // ==========================================
         function handleGame1Update(data) {
-            switchScreen('screen-game1'); syncReturnButtons(); const g1Data = data.game1 || {}; const teamA = g1Data.teamA; const teamB = g1Data.teamB; const revealed = g1Data.revealed;
-            const searchA = document.getElementById('g1-search-A'); const searchB = document.getElementById('g1-search-B'); const btnReveal = document.getElementById('g1-btn-reveal');
-            if (isHostControl()) btnReveal.style.display = 'block'; else btnReveal.style.display = 'none';
-            if (isPlaying()) { searchA.style.display = myUser.team === 'A' ? 'block' : 'none'; searchB.style.display = myUser.team === 'B' ? 'block' : 'none'; } else { searchA.style.display = 'none'; searchB.style.display = 'none'; }
-            if (teamA && teamA.locked) { if (revealed || myUser.team === 'A' || !isPlaying()) { showCardUI('g1', 'A', teamA.title, teamA.imageUrl); document.getElementById('g1-locked-A').style.display = 'none'; if (myUser.team === 'A') searchA.style.display = 'none'; } else { document.getElementById('g1-locked-A').style.display = 'flex'; } document.getElementById('g1-status-A').innerText = "พร้อมแล้ว!"; } else { resetCardUI('g1', 'A'); document.getElementById('g1-locked-A').style.display = 'none'; if (myUser.team === 'A' && isPlaying()) searchA.style.display = 'block'; }
-            if (teamB && teamB.locked) { if (revealed || myUser.team === 'B' || !isPlaying()) { showCardUI('g1', 'B', teamB.title, teamB.imageUrl); document.getElementById('g1-locked-B').style.display = 'none'; if (myUser.team === 'B') searchB.style.display = 'none'; } else { document.getElementById('g1-locked-B').style.display = 'flex'; } document.getElementById('g1-status-B').innerText = "พร้อมแล้ว!"; } else { resetCardUI('g1', 'B'); document.getElementById('g1-locked-B').style.display = 'none'; if (myUser.team === 'B' && isPlaying()) searchB.style.display = 'block'; }
-            if (revealed && isHostControl()) { btnReveal.innerText = "🔄 เริ่มเกม 1 ใหม่อีกรอบ"; btnReveal.onclick = () => startGame('game1'); } else if (isHostControl()) { btnReveal.innerText = "🎉 ผู้คุม: กดเฉลยคำตอบ!"; btnReveal.onclick = () => hostRevealGame('game1'); }
-        }
-        function showCardUI(p, s, t, i) { document.getElementById(`${p}-status-${s}`).style.display = 'none'; document.getElementById(`${p}-img-${s}`).src = i; document.getElementById(`${p}-img-${s}`).style.display = 'block'; document.getElementById(`${p}-title-${s}`).innerText = t; document.getElementById(`${p}-title-${s}`).style.display = 'block'; }
-        function resetCardUI(p, s) { document.getElementById(`${p}-status-${s}`).style.display = 'block'; document.getElementById(`${p}-status-${s}`).innerText = "ยังไม่เลือกคำตอบ"; document.getElementById(`${p}-img-${s}`).style.display = 'none'; document.getElementById(`${p}-title-${s}`).style.display = 'none'; }
-        function hostRevealGame(gameKey) { roomRef.child(gameKey).update({ revealed: true }); playSfxWinEpic(); }
+            switchScreen('screen-game1'); 
+            syncReturnButtons(); 
+            const g1Data = data.game1 || {}; 
+            const teamA = g1Data.teamA; 
+            const teamB = g1Data.teamB; 
+            const revealed = g1Data.revealed;
+            
+            const searchA = document.getElementById('g1-search-A'); 
+            const searchB = document.getElementById('g1-search-B'); 
+            const btnReveal = document.getElementById('g1-btn-reveal');
+            
+            if (isHostControl()) btnReveal.style.display = 'block'; 
+            else btnReveal.style.display = 'none';
+            
+            if (isPlaying()) { 
+                searchA.style.display = myUser.team === 'A' ? 'block' : 'none'; 
+                searchB.style.display = myUser.team === 'B' ? 'block' : 'none'; 
+            } else { 
+                searchA.style.display = 'none'; 
+                searchB.style.display = 'none'; 
+            }
 
-        // === GAME 2 (V16 FIXED WINNER MODAL & SOUNDS) ===
+            if (teamA && teamA.locked) { 
+                if (revealed || myUser.team === 'A' || !isPlaying()) { 
+                    showCardUI('g1', 'A', teamA.title, teamA.imageUrl); 
+                    document.getElementById('g1-locked-A').style.display = 'none'; 
+                    if (myUser.team === 'A') searchA.style.display = 'none'; 
+                } else { 
+                    document.getElementById('g1-locked-A').style.display = 'flex'; 
+                } 
+                document.getElementById('g1-status-A').innerText = "พร้อมแล้ว!"; 
+            } else { 
+                resetCardUI('g1', 'A'); 
+                document.getElementById('g1-locked-A').style.display = 'none'; 
+                if (myUser.team === 'A' && isPlaying()) searchA.style.display = 'block'; 
+            }
+
+            if (teamB && teamB.locked) { 
+                if (revealed || myUser.team === 'B' || !isPlaying()) { 
+                    showCardUI('g1', 'B', teamB.title, teamB.imageUrl); 
+                    document.getElementById('g1-locked-B').style.display = 'none'; 
+                    if (myUser.team === 'B') searchB.style.display = 'none'; 
+                } else { 
+                    document.getElementById('g1-locked-B').style.display = 'flex'; 
+                } 
+                document.getElementById('g1-status-B').innerText = "พร้อมแล้ว!"; 
+            } else { 
+                resetCardUI('g1', 'B'); 
+                document.getElementById('g1-locked-B').style.display = 'none'; 
+                if (myUser.team === 'B' && isPlaying()) searchB.style.display = 'block'; 
+            }
+
+            if (revealed && isHostControl()) { 
+                btnReveal.innerText = "🔄 เริ่มเกม 1 ใหม่อีกรอบ"; 
+                btnReveal.onclick = () => startGame('game1'); 
+            } else if (isHostControl()) { 
+                btnReveal.innerText = "🎉 ผู้คุม: กดเฉลยคำตอบ!"; 
+                btnReveal.onclick = () => hostRevealGame('game1'); 
+            }
+        }
+
+        function showCardUI(p, s, t, i) { 
+            document.getElementById(`${p}-status-${s}`).style.display = 'none'; 
+            document.getElementById(`${p}-img-${s}`).src = i; 
+            document.getElementById(`${p}-img-${s}`).style.display = 'block'; 
+            document.getElementById(`${p}-title-${s}`).innerText = t; 
+            document.getElementById(`${p}-title-${s}`).style.display = 'block'; 
+        }
+        
+        function resetCardUI(p, s) { 
+            document.getElementById(`${p}-status-${s}`).style.display = 'block'; 
+            document.getElementById(`${p}-status-${s}`).innerText = "ยังไม่เลือกคำตอบ"; 
+            document.getElementById(`${p}-img-${s}`).style.display = 'none'; 
+            document.getElementById(`${p}-title-${s}`).style.display = 'none'; 
+        }
+        
+        function hostRevealGame(gameKey) { 
+            roomRef.child(gameKey).update({ revealed: true }); 
+            playSfxWinEpic(); 
+        }
+
+        // ==========================================
+        // GAME 2 LOGIC (Who Am I / Tournament)
+        // ==========================================
         function generateAssignments(pObj) {
-            let pIds = Object.keys(pObj).filter(id => pObj[id].role !== 'admin'); if (pIds.length < 2) return null; 
-            for (let i = pIds.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pIds[i], pIds[j]] = [pIds[j], pIds[i]]; }
-            let assignments = {}; for (let i = 0; i < pIds.length; i++) { assignments[pIds[i]] = { targetId: pIds[(i + 1) % pIds.length], character: null }; } return assignments;
+            let pIds = Object.keys(pObj).filter(id => pObj[id].role !== 'admin'); 
+            if (pIds.length < 2) return null; 
+            
+            for (let i = pIds.length - 1; i > 0; i--) { 
+                const j = Math.floor(Math.random() * (i + 1)); 
+                [pIds[i], pIds[j]] = [pIds[j], pIds[i]]; 
+            } 
+            
+            let assignments = {}; 
+            for (let i = 0; i < pIds.length; i++) { 
+                assignments[pIds[i]] = { targetId: pIds[(i + 1) % pIds.length], character: null }; 
+            } 
+            return assignments;
         }
 
         function nextTurnG2() {
             roomRef.child('game2').once('value', snap => {
-                const g2 = snap.val(); const players = gameState.players;
+                const g2 = snap.val(); 
+                const players = gameState.players;
                 const activeIds = Object.keys(players).filter(id => players[id].role !== 'admin' && (!g2.winners || !g2.winners[id]));
-                if(activeIds.length === 0) { alert("ทุกคนชนะหมดแล้ว!"); return; }
+                
+                if(activeIds.length === 0) { 
+                    alert("ทุกคนชนะหมดแล้ว!"); 
+                    return; 
+                }
                 
                 let nextId = activeIds[0];
                 if(g2.currentTurn) {
                     let idx = activeIds.indexOf(g2.currentTurn);
-                    if(idx !== -1 && idx + 1 < activeIds.length) nextId = activeIds[idx + 1];
+                    if(idx !== -1 && idx + 1 < activeIds.length) {
+                        nextId = activeIds[idx + 1];
+                    }
                 }
                 roomRef.child('game2/currentTurn').set(nextId);
                 playSfxMove();
@@ -690,11 +988,13 @@
         }
 
         function handleGame2Update(data) {
-            switchScreen('screen-game2'); syncReturnButtons();
-            const g2 = data.game2 || {}; const isHostMode = data.state === 'game2_host';
+            switchScreen('screen-game2'); 
+            syncReturnButtons();
+            
+            const g2 = data.game2 || {}; 
+            const isHostMode = data.state === 'game2_host';
             document.getElementById('g2-title-mode').innerText = isHostMode ? "ฉันเป็นใคร (Host Mode)" : "โหมดแปะหน้าผาก (ทัวร์นาเมนต์)";
 
-            // V16 FIX: Show winner modal ONLY ONCE per user
             if (g2.winners) {
                 Object.keys(g2.winners).forEach(wid => {
                     if (!shownWinners[wid]) {
@@ -702,46 +1002,81 @@
                         document.getElementById('winner-char').innerText = g2.winners[wid].char;
                         openModal('modal-winner');
                         playSfxWinEpic();
-                        shownWinners[wid] = true; // Mark as shown locally
+                        shownWinners[wid] = true; 
                     }
                 });
             }
 
             if (isHostMode) {
-                document.getElementById('g2-headband-setup').style.display = 'none'; document.getElementById('g2-playing-area').style.display = 'none';
-                document.getElementById('g2-host-controls').style.display = isHostControl() ? 'block' : 'none'; document.getElementById('g2-host-display').style.display = 'flex';
+                document.getElementById('g2-headband-setup').style.display = 'none'; 
+                document.getElementById('g2-playing-area').style.display = 'none';
+                document.getElementById('g2-host-controls').style.display = isHostControl() ? 'block' : 'none'; 
+                document.getElementById('g2-host-display').style.display = 'flex';
                 document.getElementById('g2-turn-controls').style.display = 'none'; 
 
                 if (g2.target) {
                     if (g2.revealed || !isPlaying()) {
-                        document.getElementById('g2-img-host').src = g2.target.imageUrl; document.getElementById('g2-img-host').style.display = 'block';
-                        document.getElementById('g2-title-host').innerText = g2.target.title; document.getElementById('g2-title-host').style.display = 'block'; document.getElementById('g2-locked-host').style.display = 'none';
-                    } else { document.getElementById('g2-locked-host').style.display = 'flex'; document.getElementById('g2-img-host').style.display = 'none'; document.getElementById('g2-title-host').style.display = 'none'; }
+                        document.getElementById('g2-img-host').src = g2.target.imageUrl; 
+                        document.getElementById('g2-img-host').style.display = 'block';
+                        document.getElementById('g2-title-host').innerText = g2.target.title; 
+                        document.getElementById('g2-title-host').style.display = 'block'; 
+                        document.getElementById('g2-locked-host').style.display = 'none';
+                    } else { 
+                        document.getElementById('g2-locked-host').style.display = 'flex'; 
+                        document.getElementById('g2-img-host').style.display = 'none'; 
+                        document.getElementById('g2-title-host').style.display = 'none'; 
+                    }
                     if (isHostControl()) document.getElementById('g2-btn-reveal-host').disabled = false;
-                } else { document.getElementById('g2-img-host').style.display = 'none'; document.getElementById('g2-title-host').style.display = 'none'; document.getElementById('g2-locked-host').style.display = 'none'; if (isHostControl()) document.getElementById('g2-btn-reveal-host').disabled = true; }
+                } else { 
+                    document.getElementById('g2-img-host').style.display = 'none'; 
+                    document.getElementById('g2-title-host').style.display = 'none'; 
+                    document.getElementById('g2-locked-host').style.display = 'none'; 
+                    if (isHostControl()) document.getElementById('g2-btn-reveal-host').disabled = true; 
+                }
                 
                 handleVotingSystem(g2.voteData, data.players, g2);
 
             } else {
-                document.getElementById('g2-host-controls').style.display = 'none'; document.getElementById('g2-host-display').style.display = 'none';
+                document.getElementById('g2-host-controls').style.display = 'none'; 
+                document.getElementById('g2-host-display').style.display = 'none';
                 
                 if (!g2.assignments) {
                     if(isPlaying()) document.getElementById('g2-headband-setup').innerHTML = '<h2 style="color:var(--team-a);">ผู้เล่นไม่พอ หรือแอดมินลืมตั้งค่า</h2>';
-                    document.getElementById('g2-headband-setup').style.display = 'block'; return;
+                    document.getElementById('g2-headband-setup').style.display = 'block'; 
+                    return;
                 }
-                let allSet = true; Object.values(g2.assignments).forEach(a => { if (!a.character) allSet = false; });
+                
+                let allSet = true; 
+                Object.values(g2.assignments).forEach(a => { 
+                    if (!a.character) allSet = false; 
+                });
+                
                 if (!allSet) {
                     document.getElementById('g2-turn-controls').style.display = 'none';
-                    document.getElementById('g2-headband-setup').style.display = 'block'; document.getElementById('g2-playing-area').style.display = 'none';
+                    document.getElementById('g2-headband-setup').style.display = 'block'; 
+                    document.getElementById('g2-playing-area').style.display = 'none';
                     const myTask = g2.assignments[myUser.id];
+                    
                     if (myTask) { 
                         document.getElementById('g2-target-name').innerText = data.players[myTask.targetId]?.name; 
-                        if (myTask.character) { document.getElementById('g2-hb-input').style.display = 'none'; document.getElementById('g2-hb-radio').style.display = 'none'; document.getElementById('g2-hb-status').innerText = `คุณเลือกล็อกเสร็จแล้ว! รอคนอื่น...`; } else { document.getElementById('g2-hb-input').style.display = 'block'; document.getElementById('g2-hb-radio').style.display = 'flex'; document.getElementById('g2-hb-status').innerText = `กำลังรอเพื่อนเลือกให้เสร็จ...`;} 
+                        if (myTask.character) { 
+                            document.getElementById('g2-hb-input').style.display = 'none'; 
+                            document.getElementById('g2-hb-radio').style.display = 'none'; 
+                            document.getElementById('g2-hb-status').innerText = `คุณเลือกล็อกเสร็จแล้ว! รอคนอื่น...`; 
+                        } else { 
+                            document.getElementById('g2-hb-input').style.display = 'block'; 
+                            document.getElementById('g2-hb-radio').style.display = 'flex'; 
+                            document.getElementById('g2-hb-status').innerText = `กำลังรอเพื่อนเลือกให้เสร็จ...`;
+                        } 
                     } else if (isAdmin()) {
-                        document.getElementById('g2-hb-status').innerText = `คุณเป็นแอดมิน รอผู้เล่นจัดหัวกันให้เสร็จ...`; document.getElementById('g2-hb-input').style.display = 'none'; document.getElementById('g2-hb-radio').style.display = 'none'; document.getElementById('g2-target-name').innerText = "รอเริ่มเกม";
+                        document.getElementById('g2-hb-status').innerText = `คุณเป็นแอดมิน รอผู้เล่นจัดหัวกันให้เสร็จ...`; 
+                        document.getElementById('g2-hb-input').style.display = 'none'; 
+                        document.getElementById('g2-hb-radio').style.display = 'none'; 
+                        document.getElementById('g2-target-name').innerText = "รอเริ่มเกม";
                     }
                 } else {
-                    document.getElementById('g2-headband-setup').style.display = 'none'; document.getElementById('g2-playing-area').style.display = 'block';
+                    document.getElementById('g2-headband-setup').style.display = 'none'; 
+                    document.getElementById('g2-playing-area').style.display = 'block';
                     
                     if(isHostControl()) document.getElementById('g2-turn-controls').style.display = 'block';
                     else document.getElementById('g2-turn-controls').style.display = 'none';
@@ -752,20 +1087,26 @@
                     const guessBtn = document.getElementById('g2-btn-guess');
                     document.getElementById('g2-player-actions').style.display = isPlaying() ? 'block' : 'none';
 
-                    // Turn Alert Logic
                     if (isMyTurn) {
-                        if (!myTurnAlertPlayed) { playSfxAlert(); myTurnAlertPlayed = true; }
-                        guessBtn.disabled = false; guessBtn.innerText = "🙋‍♂️ ตาคุณแล้ว! กดขอตอบ"; guessBtn.style.background = "var(--accent)";
+                        if (!myTurnAlertPlayed) { 
+                            playSfxAlert(); 
+                            myTurnAlertPlayed = true; 
+                        }
+                        guessBtn.disabled = false; 
+                        guessBtn.innerText = "🙋‍♂️ ตาคุณแล้ว! กดขอตอบ"; 
+                        guessBtn.style.background = "var(--accent)";
                     } else {
                         myTurnAlertPlayed = false;
                         if (!g2.currentTurn) {
-                            guessBtn.disabled = true; guessBtn.innerText = "รอแอดมินกดเริ่มเทิร์น...";
+                            guessBtn.disabled = true; 
+                            guessBtn.innerText = "รอแอดมินกดเริ่มเทิร์น...";
                         } else if (amIWinner) {
                             guessBtn.style.display = 'none'; 
                         } else {
                             guessBtn.disabled = true; 
                             const turnName = data.players[g2.currentTurn]?.name || "เพื่อน";
-                            guessBtn.innerText = `ตานี้เป็นของ: ${turnName}`; guessBtn.style.background = "var(--text-muted)";
+                            guessBtn.innerText = `ตานี้เป็นของ: ${turnName}`; 
+                            guessBtn.style.background = "var(--text-muted)";
                         }
                     }
 
@@ -776,13 +1117,24 @@
         }
 
         function renderHeadbandGrid(players, assignments, winners, currentTurn) {
-            const grid = document.getElementById('g2-headband-grid'); grid.innerHTML = '';
-            let headMap = {}; Object.values(assignments).forEach(a => { headMap[a.targetId] = a.character; });
+            const grid = document.getElementById('g2-headband-grid'); 
+            grid.innerHTML = '';
+            let headMap = {}; 
+            
+            Object.values(assignments).forEach(a => { 
+                headMap[a.targetId] = a.character; 
+            });
+            
             Object.values(players).forEach(p => {
                 if (p.role === 'admin') return;
-                const char = headMap[p.id]; let headHtml = '';
-                if (!isAdmin() && p.id === myUser.id) headHtml = `<div class="headband-unknown">❓</div>`; 
-                else if (char) headHtml = `<img class="headband-img" src="${char.imageUrl}">`;
+                const char = headMap[p.id]; 
+                let headHtml = '';
+                
+                if (!isAdmin() && p.id === myUser.id) {
+                    headHtml = `<div class="headband-unknown">❓</div>`; 
+                } else if (char) {
+                    headHtml = `<img class="headband-img" src="${char.imageUrl}">`;
+                }
                 
                 const isTurn = (p.id === currentTurn);
                 const turnClass = isTurn ? 'active-turn' : '';
@@ -798,11 +1150,25 @@
             });
         }
 
-        function openGuessModal() { document.getElementById('guess-input').value = ''; openModal('modal-make-guess'); }
-        function submitGuess() { const t = document.getElementById('guess-input').value.trim(); if(!t) return; playSfxMove(); roomRef.child('game2/voteData').set({ guesserId: myUser.id, text: t, yes: 0, no: 0, voters: { init: true } }); closeModal('modal-make-guess'); }
+        function openGuessModal() { 
+            if(userSettings.sound) initAudio();
+            document.getElementById('guess-input').value = ''; 
+            openModal('modal-make-guess'); 
+        }
+        
+        function submitGuess() { 
+            const t = document.getElementById('guess-input').value.trim(); 
+            if(!t) return; 
+            playSfxMove(); 
+            roomRef.child('game2/voteData').set({ guesserId: myUser.id, text: t, yes: 0, no: 0, voters: { init: true } }); 
+            closeModal('modal-make-guess'); 
+        }
         
         function handleVotingSystem(voteData, players, g2) {
-            if (!voteData) { closeModal('modal-vote'); return; }
+            if (!voteData) { 
+                closeModal('modal-vote'); 
+                return; 
+            }
             
             const adminId = Object.keys(players).find(id => players[id].role === 'admin');
             const isGuesser = myUser.id === voteData.guesserId;
@@ -818,16 +1184,28 @@
             const actGroup = document.getElementById('vote-actions-group');
             const actWait = document.getElementById('vote-actions-waiting');
 
-            actAdmin.style.display = 'none'; actGroup.style.display = 'none'; actWait.style.display = 'none';
+            actAdmin.style.display = 'none'; 
+            actGroup.style.display = 'none'; 
+            actWait.style.display = 'none';
 
             if (adminId) {
-                if (isAdmin()) { actAdmin.style.display = 'flex'; } 
-                else { actWait.style.display = 'block'; document.getElementById('vote-waiting-text').innerText = '⏳ แอดมินกำลังชี้ขาด...'; }
+                if (isAdmin()) { 
+                    actAdmin.style.display = 'flex'; 
+                } else { 
+                    actWait.style.display = 'block'; 
+                    document.getElementById('vote-waiting-text').innerText = '⏳ แอดมินกำลังชี้ขาด...'; 
+                }
             } else {
-                if (isGuesser) { actWait.style.display = 'block'; document.getElementById('vote-waiting-text').innerText = '⏳ รอเพื่อนๆ โหวตให้...'; } 
-                else {
-                    if (voteData.voters && voteData.voters[myUser.id]) { actWait.style.display = 'block'; document.getElementById('vote-waiting-text').innerText = '⏳ คุณโหวตแล้ว รอคนอื่นโหวตให้ครบ...'; } 
-                    else { actGroup.style.display = 'flex'; }
+                if (isGuesser) { 
+                    actWait.style.display = 'block'; 
+                    document.getElementById('vote-waiting-text').innerText = '⏳ รอเพื่อนๆ โหวตให้...'; 
+                } else {
+                    if (voteData.voters && voteData.voters[myUser.id]) { 
+                        actWait.style.display = 'block'; 
+                        document.getElementById('vote-waiting-text').innerText = '⏳ คุณโหวตแล้ว รอคนอื่นโหวตให้ครบ...'; 
+                    } else { 
+                        actGroup.style.display = 'flex'; 
+                    }
                 }
                 
                 const activePlayers = Object.values(players).filter(p => p.role !== 'admin' && (!g2.winners || !g2.winners[p.id])).length; 
@@ -855,7 +1233,18 @@
             });
         }
 
-        function castVote(type) { roomRef.child('game2/voteData').once('value', snap => { const v = snap.val(); if(v) { let y = v.yes||0; let n = v.no||0; if(type==='yes') y++; else n++; roomRef.child('game2/voteData').update({ yes: y, no: n, [`voters/${myUser.id}`]: true }); playSfxMove(); } }); }
+        function castVote(type) { 
+            roomRef.child('game2/voteData').once('value', snap => { 
+                const v = snap.val(); 
+                if(v) { 
+                    let y = v.yes||0; 
+                    let n = v.no||0; 
+                    if(type==='yes') y++; else n++; 
+                    roomRef.child('game2/voteData').update({ yes: y, no: n, [`voters/${myUser.id}`]: true }); 
+                    playSfxMove(); 
+                } 
+            }); 
+        }
         
         function processVoteResult(voteData) {
             if (voteData.yes > voteData.no) { 
@@ -867,99 +1256,560 @@
             roomRef.child('game2/voteData').remove();
         }
 
-        // === GAME 3 ===
-        function setOpVideo(videoData, answerTitle, isYoutubeFlag) { roomRef.child('game3').set({ videoId: videoData, isYoutube: isYoutubeFlag, title: answerTitle, locked: true, isPlaying: false, revealed: false, buzzerId: null }); }
-        function setCustomOpVideo() { const urlOrId = document.getElementById('g3-custom-id').value.trim(); const title = document.getElementById('g3-custom-title').value.trim(); if(!urlOrId || !title) return alert("ใส่ข้อมูลให้ครบ!"); let vidId = urlOrId; let isYoutube = false; const match = urlOrId.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i); if(match) { vidId = match[1]; isYoutube = true; } setOpVideo(vidId, title, isYoutube); }
-        function hostCancelVideo() { roomRef.child('game3').update({ locked: false, isPlaying: false }); document.getElementById('g3-preview-iframe').src = ""; document.getElementById('g3-preview-video').src = ""; }
-        function hostPlayVideo() { roomRef.child('game3').update({ isPlaying: true }); document.getElementById('g3-preview-iframe').src = ""; document.getElementById('g3-preview-video').src = ""; }
-        function hostRevealGame3() { roomRef.child('game3').update({ revealed: true, buzzerId: null }); playSfxWinEpic(); }
-        function buzzIn() { playSfxMove(); roomRef.child('game3/buzzerId').transaction(currentData => { if (currentData === null) return myUser.id; return; }); }
-        function hostJudgeBuzzer(isCorrect) { if (isCorrect) hostRevealGame3(); else { playSfxWrong(); roomRef.child('game3/buzzerId').set(null); } }
+        // ==========================================
+        // GAME 3 LOGIC (OP/ED BUZZER)
+        // ==========================================
+        function setOpVideo(videoData, answerTitle, isYoutubeFlag) { 
+            roomRef.child('game3').set({ videoId: videoData, isYoutube: isYoutubeFlag, title: answerTitle, locked: true, isPlaying: false, revealed: false, buzzerId: null }); 
+        }
+        
+        function setCustomOpVideo() { 
+            const urlOrId = document.getElementById('g3-custom-id').value.trim(); 
+            const title = document.getElementById('g3-custom-title').value.trim(); 
+            if(!urlOrId || !title) return alert("ใส่ข้อมูลให้ครบ!"); 
+            
+            let vidId = urlOrId; 
+            let isYoutube = false; 
+            const match = urlOrId.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i); 
+            if(match) { 
+                vidId = match[1]; 
+                isYoutube = true; 
+            } 
+            setOpVideo(vidId, title, isYoutube); 
+        }
+        
+        function hostCancelVideo() { 
+            roomRef.child('game3').update({ locked: false, isPlaying: false }); 
+            document.getElementById('g3-preview-iframe').src = ""; 
+            document.getElementById('g3-preview-video').src = ""; 
+        }
+        
+        function hostPlayVideo() { 
+            roomRef.child('game3').update({ isPlaying: true }); 
+            document.getElementById('g3-preview-iframe').src = ""; 
+            document.getElementById('g3-preview-video').src = ""; 
+        }
+        
+        function hostRevealGame3() { 
+            roomRef.child('game3').update({ revealed: true, buzzerId: null }); 
+            playSfxWinEpic(); 
+        }
+        
+        function buzzIn() { 
+            playSfxMove(); 
+            roomRef.child('game3/buzzerId').transaction(currentData => { 
+                if (currentData === null) return myUser.id; 
+                return; 
+            }); 
+        }
+        
+        function hostJudgeBuzzer(isCorrect) { 
+            if (isCorrect) {
+                hostRevealGame3(); 
+            } else { 
+                playSfxWrong(); 
+                roomRef.child('game3/buzzerId').set(null); 
+            } 
+        }
 
         function handleGame3Update(data) {
-            switchScreen('screen-game3'); syncReturnButtons(); const g3 = data.game3;
+            switchScreen('screen-game3'); 
+            syncReturnButtons(); 
+            const g3 = data.game3;
+            
             if (isHostControl()) {
-                document.getElementById('g3-host-controls').style.display = 'block'; document.getElementById('g3-btn-reveal').style.display = g3.locked ? 'block' : 'none';
+                document.getElementById('g3-host-controls').style.display = 'block'; 
+                document.getElementById('g3-btn-reveal').style.display = g3.locked ? 'block' : 'none';
+                
                 if (g3.locked && !g3.isPlaying && !g3.revealed) {
-                    document.getElementById('g3-host-controls-select').style.display = 'none'; document.getElementById('g3-host-staging').style.display = 'block';
-                    const prevIframe = document.getElementById('g3-preview-iframe'); const prevVideo = document.getElementById('g3-preview-video');
-                    if (g3.isYoutube) { prevVideo.style.display = 'none'; prevVideo.src = ""; prevIframe.style.display = 'block'; const pSrc = `https://www.youtube.com/embed/${g3.videoId}?autoplay=1&controls=1`; if (!prevIframe.src.includes(g3.videoId)) prevIframe.src = pSrc; } 
-                    else { prevIframe.style.display = 'none'; prevIframe.src = ""; prevVideo.style.display = 'block'; if (prevVideo.src !== g3.videoId) prevVideo.src = g3.videoId; }
-                } else if (!g3.locked) { document.getElementById('g3-host-controls-select').style.display = 'block'; document.getElementById('g3-host-staging').style.display = 'none'; document.getElementById('g3-preview-iframe').src = ""; document.getElementById('g3-preview-video').src = ""; } 
-                else { document.getElementById('g3-host-controls-select').style.display = 'none'; document.getElementById('g3-host-staging').style.display = 'none'; }
-            } else { document.getElementById('g3-host-controls').style.display = 'none'; }
+                    document.getElementById('g3-host-controls-select').style.display = 'none'; 
+                    document.getElementById('g3-host-staging').style.display = 'block';
+                    
+                    const prevIframe = document.getElementById('g3-preview-iframe'); 
+                    const prevVideo = document.getElementById('g3-preview-video');
+                    
+                    if (g3.isYoutube) { 
+                        prevVideo.style.display = 'none'; 
+                        prevVideo.src = ""; 
+                        prevIframe.style.display = 'block'; 
+                        const pSrc = `https://www.youtube.com/embed/${g3.videoId}?autoplay=1&controls=1`; 
+                        if (!prevIframe.src.includes(g3.videoId)) prevIframe.src = pSrc; 
+                    } else { 
+                        prevIframe.style.display = 'none'; 
+                        prevIframe.src = ""; 
+                        prevVideo.style.display = 'block'; 
+                        if (prevVideo.src !== g3.videoId) prevVideo.src = g3.videoId; 
+                    }
+                } else if (!g3.locked) { 
+                    document.getElementById('g3-host-controls-select').style.display = 'block'; 
+                    document.getElementById('g3-host-staging').style.display = 'none'; 
+                    document.getElementById('g3-preview-iframe').src = ""; 
+                    document.getElementById('g3-preview-video').src = ""; 
+                } else { 
+                    document.getElementById('g3-host-controls-select').style.display = 'none'; 
+                    document.getElementById('g3-host-staging').style.display = 'none'; 
+                }
+            } else { 
+                document.getElementById('g3-host-controls').style.display = 'none'; 
+            }
 
-            const iframe = document.getElementById('g3-iframe'); const htmlVideo = document.getElementById('g3-html-video'); const buzzArea = document.getElementById('g3-player-buzzer-area'); const btnBuzz = document.getElementById('btn-buzz'); const statusBuzz = document.getElementById('g3-buzzer-status'); const judgePanel = document.getElementById('g3-judge-panel'); const statusDisplay = document.getElementById('g3-status'); const videoContainer = document.getElementById('g3-video-container');
+            const iframe = document.getElementById('g3-iframe'); 
+            const htmlVideo = document.getElementById('g3-html-video'); 
+            const buzzArea = document.getElementById('g3-player-buzzer-area'); 
+            const btnBuzz = document.getElementById('btn-buzz'); 
+            const statusBuzz = document.getElementById('g3-buzzer-status'); 
+            const judgePanel = document.getElementById('g3-judge-panel'); 
+            const statusDisplay = document.getElementById('g3-status'); 
+            const videoContainer = document.getElementById('g3-video-container');
 
             if (g3.locked) {
                 if (g3.isPlaying) {
-                    statusDisplay.style.display = 'none'; videoContainer.style.display = 'block';
-                    if (g3.isYoutube !== false) { htmlVideo.style.display = 'none'; htmlVideo.src = ""; iframe.style.display = 'block'; const newSrc = `https://www.youtube.com/embed/${g3.videoId}?autoplay=1&controls=0&modestbranding=1&disablekb=1`; if (!iframe.src.includes(g3.videoId)) iframe.src = newSrc; } 
-                    else { iframe.style.display = 'none'; iframe.src = ""; htmlVideo.style.display = 'block'; if (htmlVideo.src !== g3.videoId) htmlVideo.src = g3.videoId; }
+                    statusDisplay.style.display = 'none'; 
+                    videoContainer.style.display = 'block';
                     
-                    if (isPlaying() && !g3.revealed) { buzzArea.style.display = 'block'; if (g3.buzzerId) { btnBuzz.disabled = true; if (g3.buzzerId === myUser.id) { statusBuzz.innerText = "คุณกดได้! เปิดไมค์ตอบแอดมินเลย!"; statusBuzz.style.color = "var(--accent)"; } else { const who = data.players[g3.buzzerId]?.name || "เพื่อน"; statusBuzz.innerText = `${who} กดตัดหน้า!`; statusBuzz.style.color = "var(--team-a)"; } } else { btnBuzz.disabled = false; statusBuzz.innerText = ""; } } else { buzzArea.style.display = 'none'; }
-                    if (isHostControl()) { if (g3.buzzerId && !g3.revealed) { judgePanel.style.display = 'block'; document.getElementById('g3-who-buzzed-host').innerText = `🚨 ${data.players[g3.buzzerId]?.name || "ผู้เล่น"} กดตอบแล้ว!`; } else { judgePanel.style.display = 'none'; } document.getElementById('g3-btn-reveal').disabled = false; }
-                } else { statusDisplay.style.display = 'block'; statusDisplay.innerText = "แอดมินเลือกลิงก์แล้ว! เตรียมตัว..."; videoContainer.style.display = 'none'; buzzArea.style.display = 'none'; judgePanel.style.display = 'none'; iframe.src = ""; htmlVideo.src = ""; }
-                if (g3.revealed) { document.getElementById('g3-title').innerText = g3.title; document.getElementById('g3-answer-display').style.display = 'block'; } else { document.getElementById('g3-answer-display').style.display = 'none'; }
-            } else { statusDisplay.style.display = 'block'; statusDisplay.innerText = "รอแอดมินเลือกวิดีโอ..."; videoContainer.style.display = 'none'; document.getElementById('g3-answer-display').style.display = 'none'; iframe.src = ""; htmlVideo.src = ""; buzzArea.style.display = 'none'; if (judgePanel) judgePanel.style.display = 'none'; if(isHostControl()) document.getElementById('g3-btn-reveal').disabled = true; }
-        }
-
-        // === GAME 4 ===
-        function handleGame4Update(data) { switchScreen('screen-game4'); syncReturnButtons(); const g4 = data.game4; if (!g4 || !g4.tiers) return; renderTierBoard(g4.tiers); renderTierPool(g4.pool || []); document.getElementById('g4-host-actions').style.display = isHostControl() ? 'flex' : 'none'; }
-        function renderTierBoard(tiers) { const board = document.getElementById('g4-tier-board'); board.innerHTML = ''; tiers.forEach((tier, index) => { const itemsHtml = (tier.items || []).map(item => `<div class="tier-item-card" draggable="true" ondragstart="dragStart(event, '${item.id}')" onclick="openMoveModal('${item.id}')"><img src="${item.img}"><div class="item-name">${item.name}</div></div>`).join(''); let controlsHtml = isHostControl() ? `<div class="tier-controls"><button class="tier-btn" onclick="moveTierOrder(${index}, -1)">▲</button><button class="tier-btn" onclick="moveTierOrder(${index}, 1)">▼</button></div>` : ''; board.innerHTML += `<div class="tier-row" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'tier', ${index})" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)"><div class="tier-label-container"><div class="tier-label" style="background-color: ${tier.color};" ${isHostControl() ? `onclick="openEditTierModal(${index}, '${tier.id}', '${tier.name}', '${tier.color}')"` : ''}>${tier.name}</div>${controlsHtml}</div><div class="tier-items">${itemsHtml}</div></div>`; }); }
-        function renderTierPool(pool) { const container = document.getElementById('g4-tier-pool'); container.innerHTML = ''; if (pool.length === 0) return container.innerHTML = '<h3 style="color:var(--text-muted); width:100%; text-align:center; pointer-events: none;">ยังไม่มีการ์ตูนในกองกลาง ลองค้นหาดูสิ!</h3>'; pool.forEach(item => { container.innerHTML += `<div class="tier-item-card" draggable="true" ondragstart="dragStart(event, '${item.id}')" onclick="openMoveModal('${item.id}')"><img src="${item.img}"><div class="item-name">${item.name}</div></div>`; }); }
-        function addPresetToTier(name, imgUrl) { const uid = 'item_' + Date.now() + Math.floor(Math.random()*100); roomRef.child('game4/pool').once('value', snap => { let currentPool = snap.val() || []; currentPool.push({ id: uid, name: name, img: imgUrl }); roomRef.child('game4/pool').set(currentPool); playSfxMove(); }); }
-        function captureTierList() { const board = document.getElementById('g4-tier-board'); const controls = board.querySelectorAll('.tier-controls'); controls.forEach(c => c.style.display = 'none'); html2canvas(board, { backgroundColor: userSettings.bgColor, scale: 2 }).then(canvas => { const link = document.createElement('a'); link.download = 'AnimeTierList.png'; link.href = canvas.toDataURL(); link.click(); controls.forEach(c => c.style.display = 'flex'); }); }
-        function dragStart(e, id) { e.dataTransfer.setData('text/plain', id); setTimeout(() => e.target.classList.add('dragging'), 0); }
-        function allowDrop(e) { e.preventDefault(); } function dragEnter(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); } function dragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
-        function handleDrop(e, destLocation, destIndex) { e.preventDefault(); e.currentTarget.classList.remove('drag-over'); const itemId = e.dataTransfer.getData('text/plain'); if(!itemId) return; executeMoveItemById(itemId, destLocation, destIndex); document.querySelectorAll('.tier-item-card').forEach(el => el.classList.remove('dragging')); }
-        function openMoveModal(itemId) { const g4 = gameState.game4; const buttonsContainer = document.getElementById('ta-buttons'); buttonsContainer.innerHTML = ''; g4.tiers.forEach((t, i) => { buttonsContainer.innerHTML += `<button class="btn-host" onclick="executeMoveItemById('${itemId}', 'tier', ${i})">ย้ายไป: ${t.name}</button>`; }); buttonsContainer.innerHTML += `<button class="btn-primary" style="margin-top: 1rem;" onclick="executeMoveItemById('${itemId}', 'pool', 0)">เอากลับลงกองกลาง</button>`; if (isHostControl()) buttonsContainer.innerHTML += `<button class="btn-danger" onclick="executeDeleteItemById('${itemId}')">🗑️ ลบทิ้ง</button>`; openModal('modal-tier-action'); }
-        function executeMoveItemById(itemId, destLocation, destIndex) { const g4 = gameState.game4; let itemObj = null; if(!g4.pool) g4.pool = []; g4.tiers.forEach(t => { if(!t.items) t.items = []; }); const poolIdx = g4.pool.findIndex(i => i.id === itemId); if (poolIdx > -1) { itemObj = g4.pool.splice(poolIdx, 1)[0]; } else { for (let t = 0; t < g4.tiers.length; t++) { const tIdx = g4.tiers[t].items.findIndex(i => i.id === itemId); if (tIdx > -1) { itemObj = g4.tiers[t].items.splice(tIdx, 1)[0]; break; } } } if(!itemObj) { closeModal('modal-tier-action'); return; } if (destLocation === 'pool') { g4.pool.push(itemObj); } else { g4.tiers[destIndex].items.push(itemObj); } roomRef.child('game4').update({ tiers: g4.tiers, pool: g4.pool }); closeModal('modal-tier-action'); playSfxMove(); }
-        function executeDeleteItemById(itemId) { const g4 = gameState.game4; if(!g4.pool) g4.pool = []; g4.tiers.forEach(t => { if(!t.items) t.items = []; }); const poolIdx = g4.pool.findIndex(i => i.id === itemId); if (poolIdx > -1) { g4.pool.splice(poolIdx, 1); } else { for (let t = 0; t < g4.tiers.length; t++) { const tIdx = g4.tiers[t].items.findIndex(i => i.id === itemId); if (tIdx > -1) { g4.tiers[t].items.splice(tIdx, 1); break; } } } roomRef.child('game4').update({ tiers: g4.tiers, pool: g4.pool }); closeModal('modal-tier-action'); }
-        function moveTierOrder(index, direction) { const g4 = gameState.game4; if (index + direction < 0 || index + direction >= g4.tiers.length) return; const temp = g4.tiers[index]; g4.tiers[index] = g4.tiers[index + direction]; g4.tiers[index + direction] = temp; roomRef.child('game4/tiers').set(g4.tiers); playSfxMove();}
-        function clearTierBoard() { if(!isHostControl()) return; if(confirm("ล้างกระดานทั้งหมดจริงดิ?")) startGame('game4'); }
-        function openAddTierModal() { document.getElementById('et-title').innerText = "สร้าง Tier"; document.getElementById('et-name').value = "NEW"; document.getElementById('et-color').value = "#ffffff"; document.getElementById('et-id').value = "new"; document.getElementById('et-btn-delete').style.display = 'none'; openModal('modal-edit-tier'); }
-        function openEditTierModal(index, id, name, color) { document.getElementById('et-title').innerText = "แก้ไข Tier"; document.getElementById('et-name').value = name; document.getElementById('et-color').value = color; document.getElementById('et-id').value = index; document.getElementById('et-btn-delete').style.display = 'block'; openModal('modal-edit-tier'); }
-        function saveTierSetting() { const n = document.getElementById('et-name').value.trim(); const c = document.getElementById('et-color').value; const i = document.getElementById('et-id').value; const g4 = gameState.game4; if(!n) return; if (i === 'new') g4.tiers.push({ id: 't_'+Date.now(), name: n, color: c, items: [] }); else { g4.tiers[i].name = n; g4.tiers[i].color = c; } roomRef.child('game4/tiers').set(g4.tiers); closeModal('modal-edit-tier'); }
-        function deleteTier() { const i = document.getElementById('et-id').value; if (i === 'new') return; if(confirm('ลบเลยนะ?')) { gameState.game4.tiers.splice(i, 1); roomRef.child('game4/tiers').set(gameState.game4.tiers); closeModal('modal-edit-tier'); } }
-
-        // ==========================================
-        // API SEARCH ENGINE 
-        // ==========================================
-        function debounceSearchG2(context) { clearTimeout(typingTimer); const radioType = document.querySelector(`input[name="${context === 'g2_host' ? 'g2-host-type' : 'g2-hb-type'}"]:checked`).value; typingTimer = setTimeout(() => { executeSearch(context, radioType); }, 500); }
-        function debounceSearch(context, type, extra) { clearTimeout(typingTimer); typingTimer = setTimeout(() => { executeSearch(context, type, extra); }, 500); }
-        async function executeSearch(context, type, extra) {
-            let inputId = '', resultsId = '';
-            if (context === 'g1') { inputId = `g1-input-${extra}`; resultsId = `g1-results-${extra}`; } else if (context === 'g2_host') { inputId = 'g2-host-input'; resultsId = 'g2-host-results'; } else if (context === 'g2_hb') { inputId = 'g2-hb-input'; resultsId = 'g2-hb-results'; } else if (context === 'g4') { inputId = 'g4-search-input'; resultsId = 'g4-search-results'; }
-            let rawQuery = document.getElementById(inputId).value.trim(); const resContainer = document.getElementById(resultsId);
-            if (rawQuery.length < 2) { resContainer.style.display = 'none'; return; }
-            let query = translateQuery(rawQuery);
-            try {
-                if (type === 'anime') {
-                    const response = await fetch(`https://api.jikan.moe/v4/anime?q=${query}&limit=8`); const resData = await response.json(); resContainer.innerHTML = '';
-                    if (resData.data && resData.data.length > 0) { resData.data.forEach(item => { const title = item.title_english || item.title; const imageUrl = item.images.webp.image_url; const div = document.createElement('div'); div.className = 'search-item'; div.innerHTML = `<img src="${imageUrl}"><span>${title}</span>`; if(context === 'g2_host' || context === 'g2_hb') { div.onclick = (e) => { e.stopPropagation(); fetchCharactersByAnime(item.mal_id, context, title); }; } else { div.onclick = (e) => { e.stopPropagation(); handleSelectAPI(context, title, imageUrl, extra); }; } resContainer.appendChild(div); }); resContainer.style.display = 'block'; } else { resContainer.innerHTML = '<div style="padding:10px;">ไม่พบข้อมูล</div>'; resContainer.style.display = 'block'; }
-                } else {
-                    const response = await fetch(`https://api.jikan.moe/v4/characters?q=${query}&limit=8`); const resData = await response.json(); resContainer.innerHTML = '';
-                    if (resData.data && resData.data.length > 0) { resData.data.forEach(item => { const title = item.name; const imageUrl = item.images.webp.image_url; const div = document.createElement('div'); div.className = 'search-item'; div.innerHTML = `<img src="${imageUrl}"><span>${title}</span>`; div.onclick = (e) => { e.stopPropagation(); handleSelectAPI(context, title, imageUrl, extra); }; resContainer.appendChild(div); }); resContainer.style.display = 'block'; } else { resContainer.innerHTML = '<div style="padding:10px;">ไม่พบข้อมูล</div>'; resContainer.style.display = 'block'; }
+                    if (g3.isYoutube !== false) { 
+                        htmlVideo.style.display = 'none'; 
+                        htmlVideo.src = ""; 
+                        iframe.style.display = 'block'; 
+                        const newSrc = `https://www.youtube.com/embed/${g3.videoId}?autoplay=1&controls=0&modestbranding=1&disablekb=1`; 
+                        if (!iframe.src.includes(g3.videoId)) iframe.src = newSrc; 
+                    } else { 
+                        iframe.style.display = 'none'; 
+                        iframe.src = ""; 
+                        htmlVideo.style.display = 'block'; 
+                        if (htmlVideo.src !== g3.videoId) htmlVideo.src = g3.videoId; 
+                    }
+                    
+                    if (isPlaying() && !g3.revealed) { 
+                        buzzArea.style.display = 'block'; 
+                        if (g3.buzzerId) { 
+                            btnBuzz.disabled = true; 
+                            if (g3.buzzerId === myUser.id) { 
+                                statusBuzz.innerText = "คุณกดได้! เปิดไมค์ตอบแอดมินเลย!"; 
+                                statusBuzz.style.color = "var(--accent)"; 
+                            } else { 
+                                const who = data.players[g3.buzzerId]?.name || "เพื่อน"; 
+                                statusBuzz.innerText = `${who} กดตัดหน้า!`; 
+                                statusBuzz.style.color = "var(--team-a)"; 
+                            } 
+                        } else { 
+                            btnBuzz.disabled = false; 
+                            statusBuzz.innerText = ""; 
+                        } 
+                    } else { 
+                        buzzArea.style.display = 'none'; 
+                    }
+                    
+                    if (isHostControl()) { 
+                        if (g3.buzzerId && !g3.revealed) { 
+                            judgePanel.style.display = 'block'; 
+                            document.getElementById('g3-who-buzzed-host').innerText = `🚨 ${data.players[g3.buzzerId]?.name || "ผู้เล่น"} กดตอบแล้ว!`; 
+                        } else { 
+                            judgePanel.style.display = 'none'; 
+                        } 
+                        document.getElementById('g3-btn-reveal').disabled = false; 
+                    }
+                } else { 
+                    statusDisplay.style.display = 'block'; 
+                    statusDisplay.innerText = "แอดมินเลือกลิงก์แล้ว! เตรียมตัว..."; 
+                    videoContainer.style.display = 'none'; 
+                    buzzArea.style.display = 'none'; 
+                    judgePanel.style.display = 'none'; 
+                    iframe.src = ""; 
+                    htmlVideo.src = ""; 
                 }
-            } catch (e) { console.error(e); }
+                
+                if (g3.revealed) { 
+                    document.getElementById('g3-title').innerText = g3.title; 
+                    document.getElementById('g3-answer-display').style.display = 'block'; 
+                } else { 
+                    document.getElementById('g3-answer-display').style.display = 'none'; 
+                }
+            } else { 
+                statusDisplay.style.display = 'block'; 
+                statusDisplay.innerText = "รอแอดมินเลือกวิดีโอ..."; 
+                videoContainer.style.display = 'none'; 
+                document.getElementById('g3-answer-display').style.display = 'none'; 
+                iframe.src = ""; 
+                htmlVideo.src = ""; 
+                buzzArea.style.display = 'none'; 
+                if (judgePanel) judgePanel.style.display = 'none'; 
+                if(isHostControl()) document.getElementById('g3-btn-reveal').disabled = true; 
+            }
         }
 
-        async function fetchCharactersByAnime(animeId, context, animeTitle) {
-            const resultsId = context === 'g2_host' ? 'g2-host-results' : 'g2-hb-results'; const resContainer = document.getElementById(resultsId); resContainer.innerHTML = `<div style="padding:10px; text-align:center;">กำลังโหลดตัวละครจากเรื่อง...</div>`; resContainer.style.display = 'block'; 
-            try {
-                const response = await fetch(`https://api.jikan.moe/v4/anime/${animeId}/characters`); const resData = await response.json(); resContainer.innerHTML = '';
-                if (resData.data && resData.data.length > 0) { const chars = resData.data.slice(0, 20); chars.forEach(item => { const title = item.character.name; const imageUrl = item.character.images.webp.image_url; const div = document.createElement('div'); div.className = 'search-item'; div.innerHTML = `<img src="${imageUrl}"><span>${title}</span>`; div.onclick = (e) => { e.stopPropagation(); handleSelectAPI(context, title, imageUrl); }; resContainer.appendChild(div); }); } else { resContainer.innerHTML = '<div style="padding:10px;">ไม่พบตัวละครในเรื่องนี้</div>'; }
-            } catch (e) { console.error(e); resContainer.innerHTML = '<div style="padding:10px;">โหลดข้อมูลผิดพลาด</div>';}
+        // ==========================================
+        // GAME 4 LOGIC (TIER LIST)
+        // ==========================================
+        function handleGame4Update(data) { 
+            switchScreen('screen-game4'); 
+            syncReturnButtons(); 
+            const g4 = data.game4; 
+            if (!g4 || !g4.tiers) return; 
+            renderTierBoard(g4.tiers); 
+            renderTierPool(g4.pool || []); 
+            document.getElementById('g4-host-actions').style.display = isHostControl() ? 'flex' : 'none'; 
         }
 
-        function handleSelectAPI(context, title, imageUrl, extra) {
-            if (context === 'g1') { document.getElementById(`g1-results-${extra}`).style.display = 'none'; document.getElementById(`g1-input-${extra}`).value = ''; roomRef.child(`game1/team${extra}`).set({ title, imageUrl, locked: true }); playSfxMove(); }
-            else if (context === 'g2_host') { document.getElementById('g2-host-results').style.display = 'none'; document.getElementById('g2-host-input').value = ''; roomRef.child('game2/target').set({ title, imageUrl }); playSfxMove(); } 
-            else if (context === 'g2_hb') { document.getElementById('g2-hb-results').style.display = 'none'; document.getElementById('g2-hb-input').value = ''; roomRef.child(`game2/assignments/${myUser.id}/character`).set({ title, imageUrl }); playSfxMove(); } 
-            else if (context === 'g4') { document.getElementById('g4-search-results').style.display = 'none'; document.getElementById('g4-search-input').value = ''; addPresetToTier(title, imageUrl); }
+        function renderTierBoard(tiers) { 
+            const board = document.getElementById('g4-tier-board'); 
+            board.innerHTML = ''; 
+            tiers.forEach((tier, index) => { 
+                const itemsHtml = (tier.items || []).map(item => `<div class="tier-item-card" draggable="true" ondragstart="dragStart(event, '${item.id}')" onclick="openMoveModal('${item.id}')"><img src="${item.img}"><div class="item-name">${item.name}</div></div>`).join(''); 
+                let controlsHtml = isHostControl() ? `<div class="tier-controls"><button class="tier-btn" onclick="moveTierOrder(${index}, -1)">▲</button><button class="tier-btn" onclick="moveTierOrder(${index}, 1)">▼</button></div>` : ''; 
+                board.innerHTML += `<div class="tier-row" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'tier', ${index})" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)"><div class="tier-label-container"><div class="tier-label" style="background-color: ${tier.color};" ${isHostControl() ? `onclick="openEditTierModal(${index}, '${tier.id}', '${tier.name}', '${tier.color}')"` : ''}>${tier.name}</div>${controlsHtml}</div><div class="tier-items">${itemsHtml}</div></div>`; 
+            }); 
         }
-        document.addEventListener('click', e => { if(!e.target.closest('.search-container')) { document.querySelectorAll('.search-results').forEach(el => el.style.display = 'none'); } });
+
+        function renderTierPool(pool) { 
+            const container = document.getElementById('g4-tier-pool'); 
+            container.innerHTML = ''; 
+            if (pool.length === 0) {
+                container.innerHTML = '<h3 style="color:var(--text-muted); width:100%; text-align:center; pointer-events: none;">ยังไม่มีการ์ตูนในกองกลาง ลองค้นหาดูสิ!</h3>'; 
+                return;
+            }
+            pool.forEach(item => { 
+                container.innerHTML += `<div class="tier-item-card" draggable="true" ondragstart="dragStart(event, '${item.id}')" onclick="openMoveModal('${item.id}')"><img src="${item.img}"><div class="item-name">${item.name}</div></div>`; 
+            }); 
+        }
+
+        function addPresetToTier(name, imgUrl) { 
+            const uid = 'item_' + Date.now() + Math.floor(Math.random()*100); 
+            roomRef.child('game4/pool').once('value', snap => { 
+                let currentPool = snap.val() || []; 
+                currentPool.push({ id: uid, name: name, img: imgUrl }); 
+                roomRef.child('game4/pool').set(currentPool); 
+                playSfxMove(); 
+            }); 
+        }
+
+        // V21 FIX: Added useCORS to html2canvas to fix blank image captures
+        function captureTierList() { 
+            const board = document.getElementById('g4-tier-board'); 
+            const controls = board.querySelectorAll('.tier-controls'); 
+            controls.forEach(c => c.style.display = 'none'); 
+            
+            html2canvas(board, { 
+                backgroundColor: userSettings.bgColor, 
+                scale: 2,
+                useCORS: true,
+                allowTaint: true
+            }).then(canvas => { 
+                const link = document.createElement('a'); 
+                link.download = 'AnimeTierList.png'; 
+                link.href = canvas.toDataURL("image/png"); 
+                link.click(); 
+                controls.forEach(c => c.style.display = 'flex'); 
+            }).catch(err => {
+                console.error("Capture Error:", err);
+                alert("เกิดข้อผิดพลาดในการแคปรูปภาพ อาจติดเรื่องลิขสิทธิ์ของภาพ (CORS)");
+                controls.forEach(c => c.style.display = 'flex'); 
+            }); 
+        }
+
+        function dragStart(e, id) { e.dataTransfer.setData('text/plain', id); setTimeout(() => e.target.classList.add('dragging'), 0); } 
+        function allowDrop(e) { e.preventDefault(); } 
+        function dragEnter(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); } 
+        function dragLeave(e) { e.currentTarget.classList.remove('drag-over'); } 
+        
+        function handleDrop(e, destLocation, destIndex) { 
+            e.preventDefault(); 
+            e.currentTarget.classList.remove('drag-over'); 
+            const itemId = e.dataTransfer.getData('text/plain'); 
+            if(!itemId) return; 
+            executeMoveItemById(itemId, destLocation, destIndex); 
+            document.querySelectorAll('.tier-item-card').forEach(el => el.classList.remove('dragging')); 
+        }
+
+        function openMoveModal(itemId) { 
+            const g4 = gameState.game4; 
+            const buttonsContainer = document.getElementById('ta-buttons'); 
+            buttonsContainer.innerHTML = ''; 
+            
+            g4.tiers.forEach((t, i) => { 
+                buttonsContainer.innerHTML += `<button class="btn-host" onclick="executeMoveItemById('${itemId}', 'tier', ${i})">ย้ายไป: ${t.name}</button>`; 
+            }); 
+            
+            buttonsContainer.innerHTML += `<button class="btn-primary" style="margin-top: 1rem;" onclick="executeMoveItemById('${itemId}', 'pool', 0)">เอากลับลงกองกลาง</button>`; 
+            
+            if (isHostControl()) {
+                buttonsContainer.innerHTML += `<button class="btn-danger" onclick="executeDeleteItemById('${itemId}')">🗑️ ลบทิ้ง</button>`; 
+            }
+            openModal('modal-tier-action'); 
+        }
+
+        function executeMoveItemById(itemId, destLocation, destIndex) { 
+            const g4 = gameState.game4; 
+            let itemObj = null; 
+            if(!g4.pool) g4.pool = []; 
+            g4.tiers.forEach(t => { if(!t.items) t.items = []; }); 
+            
+            const poolIdx = g4.pool.findIndex(i => i.id === itemId); 
+            if (poolIdx > -1) { 
+                itemObj = g4.pool.splice(poolIdx, 1)[0]; 
+            } else { 
+                for (let t = 0; t < g4.tiers.length; t++) { 
+                    const tIdx = g4.tiers[t].items.findIndex(i => i.id === itemId); 
+                    if (tIdx > -1) { 
+                        itemObj = g4.tiers[t].items.splice(tIdx, 1)[0]; 
+                        break; 
+                    } 
+                } 
+            } 
+            if(!itemObj) { closeModal('modal-tier-action'); return; } 
+            
+            if (destLocation === 'pool') { 
+                g4.pool.push(itemObj); 
+            } else { 
+                g4.tiers[destIndex].items.push(itemObj); 
+            } 
+            
+            roomRef.child('game4').update({ tiers: g4.tiers, pool: g4.pool }); 
+            closeModal('modal-tier-action'); 
+            playSfxMove(); 
+        }
+
+        function executeDeleteItemById(itemId) { 
+            const g4 = gameState.game4; 
+            if(!g4.pool) g4.pool = []; 
+            g4.tiers.forEach(t => { if(!t.items) t.items = []; }); 
+            
+            const poolIdx = g4.pool.findIndex(i => i.id === itemId); 
+            if (poolIdx > -1) { 
+                g4.pool.splice(poolIdx, 1); 
+            } else { 
+                for (let t = 0; t < g4.tiers.length; t++) { 
+                    const tIdx = g4.tiers[t].items.findIndex(i => i.id === itemId); 
+                    if (tIdx > -1) { 
+                        g4.tiers[t].items.splice(tIdx, 1); 
+                        break; 
+                    } 
+                } 
+            } 
+            roomRef.child('game4').update({ tiers: g4.tiers, pool: g4.pool }); 
+            closeModal('modal-tier-action'); 
+        }
+
+        function moveTierOrder(index, direction) { 
+            const g4 = gameState.game4; 
+            if (index + direction < 0 || index + direction >= g4.tiers.length) return; 
+            
+            const temp = g4.tiers[index]; 
+            g4.tiers[index] = g4.tiers[index + direction]; 
+            g4.tiers[index + direction] = temp; 
+            
+            roomRef.child('game4/tiers').set(g4.tiers); 
+            playSfxMove();
+        }
+
+        function clearTierBoard() { 
+            if(!isHostControl()) return; 
+            if(confirm("ล้างกระดานทั้งหมดจริงดิ?")) startGame('game4'); 
+        }
+
+        function openAddTierModal() { 
+            document.getElementById('et-title').innerText = "สร้าง Tier"; 
+            document.getElementById('et-name').value = "NEW"; 
+            document.getElementById('et-color').value = "#ffffff"; 
+            document.getElementById('et-id').value = "new"; 
+            document.getElementById('et-btn-delete').style.display = 'none'; 
+            openModal('modal-edit-tier'); 
+        }
+
+        function openEditTierModal(index, id, name, color) { 
+            document.getElementById('et-title').innerText = "แก้ไข Tier"; 
+            document.getElementById('et-name').value = name; 
+            document.getElementById('et-color').value = color; 
+            document.getElementById('et-id').value = index; 
+            document.getElementById('et-btn-delete').style.display = 'block'; 
+            openModal('modal-edit-tier'); 
+        }
+
+        function saveTierSetting() { 
+            const n = document.getElementById('et-name').value.trim(); 
+            const c = document.getElementById('et-color').value; 
+            const i = document.getElementById('et-id').value; 
+            const g4 = gameState.game4; 
+            
+            if(!n) return; 
+            if (i === 'new') { 
+                g4.tiers.push({ id: 't_'+Date.now(), name: n, color: c, items: [] }); 
+            } else { 
+                g4.tiers[i].name = n; g4.tiers[i].color = c; 
+            } 
+            roomRef.child('game4/tiers').set(g4.tiers); 
+            closeModal('modal-edit-tier'); 
+        }
+
+        function deleteTier() { 
+            const i = document.getElementById('et-id').value; 
+            if (i === 'new') return; 
+            if(confirm('ลบเลยนะ?')) { 
+                gameState.game4.tiers.splice(i, 1); 
+                roomRef.child('game4/tiers').set(gameState.game4.tiers); 
+                closeModal('modal-edit-tier'); 
+            } 
+        }
+
+        // ==========================================
+        // API SEARCH ENGINE (JIKAN API)
+        // ==========================================
+        function debounceSearchG2(context) { 
+            clearTimeout(typingTimer); 
+            const radioType = document.querySelector(`input[name="${context === 'g2_host' ? 'g2-host-type' : 'g2-hb-type'}"]:checked`).value; 
+            typingTimer = setTimeout(() => { executeSearch(context, radioType); }, 500); 
+        }
+
+        function debounceSearch(context, type, extra) { 
+            clearTimeout(typingTimer); 
+            typingTimer = setTimeout(() => { executeSearch(context, type, extra); }, 500); 
+        }
+
+        async function executeSearch(context, type, extra) { 
+            let inputId = ''; 
+            let resultsId = ''; 
+            
+            if (context === 'g1') { 
+                inputId = `g1-input-${extra}`; resultsId = `g1-results-${extra}`; 
+            } else if (context === 'g2_host') { 
+                inputId = 'g2-host-input'; resultsId = 'g2-host-results'; 
+            } else if (context === 'g2_hb') { 
+                inputId = 'g2-hb-input'; resultsId = 'g2-hb-results'; 
+            } else if (context === 'g4') { 
+                inputId = 'g4-search-input'; resultsId = 'g4-search-results'; 
+            } 
+            
+            let rawQuery = document.getElementById(inputId).value.trim(); 
+            const resContainer = document.getElementById(resultsId); 
+            
+            if (rawQuery.length < 2) { resContainer.style.display = 'none'; return; } 
+            let query = translateQuery(rawQuery); 
+            
+            try { 
+                if (type === 'anime') { 
+                    const response = await fetch(`https://api.jikan.moe/v4/anime?q=${query}&limit=8`); 
+                    const resData = await response.json(); 
+                    resContainer.innerHTML = ''; 
+                    
+                    if (resData.data && resData.data.length > 0) { 
+                        resData.data.forEach(item => { 
+                            const title = item.title_english || item.title; 
+                            const imageUrl = item.images.webp.image_url; 
+                            const div = document.createElement('div'); 
+                            div.className = 'search-item'; 
+                            div.innerHTML = `<img src="${imageUrl}"><span>${title}</span>`; 
+                            
+                            if(context === 'g2_host' || context === 'g2_hb') { 
+                                div.onclick = (e) => { 
+                                    e.stopPropagation(); 
+                                    fetchCharactersByAnime(item.mal_id, context, title); 
+                                }; 
+                            } else { 
+                                div.onclick = (e) => { 
+                                    e.stopPropagation(); 
+                                    handleSelectAPI(context, title, imageUrl, extra); 
+                                }; 
+                            } 
+                            resContainer.appendChild(div); 
+                        }); 
+                        resContainer.style.display = 'block'; 
+                    } else { 
+                        resContainer.innerHTML = '<div style="padding:10px;">ไม่พบข้อมูล</div>'; 
+                        resContainer.style.display = 'block'; 
+                    } 
+                } else { 
+                    const response = await fetch(`https://api.jikan.moe/v4/characters?q=${query}&limit=8`); 
+                    const resData = await response.json(); 
+                    resContainer.innerHTML = ''; 
+                    
+                    if (resData.data && resData.data.length > 0) { 
+                        resData.data.forEach(item => { 
+                            const title = item.name; 
+                            const imageUrl = item.images.webp.image_url; 
+                            const div = document.createElement('div'); 
+                            div.className = 'search-item'; 
+                            div.innerHTML = `<img src="${imageUrl}"><span>${title}</span>`; 
+                            
+                            div.onclick = (e) => { 
+                                e.stopPropagation(); 
+                                handleSelectAPI(context, title, imageUrl, extra); 
+                            }; 
+                            resContainer.appendChild(div); 
+                        }); 
+                        resContainer.style.display = 'block'; 
+                    } else { 
+                        resContainer.innerHTML = '<div style="padding:10px;">ไม่พบข้อมูล</div>'; 
+                        resContainer.style.display = 'block'; 
+                    } 
+                } 
+            } catch (e) { 
+                console.error(e); 
+            } 
+        }
+
+        async function fetchCharactersByAnime(animeId, context, animeTitle) { 
+            const resultsId = context === 'g2_host' ? 'g2-host-results' : 'g2-hb-results'; 
+            const resContainer = document.getElementById(resultsId); 
+            resContainer.innerHTML = `<div style="padding:10px; text-align:center;">กำลังโหลดตัวละครจากเรื่อง...</div>`; 
+            resContainer.style.display = 'block'; 
+            
+            try { 
+                const response = await fetch(`https://api.jikan.moe/v4/anime/${animeId}/characters`); 
+                const resData = await response.json(); 
+                resContainer.innerHTML = ''; 
+                
+                if (resData.data && resData.data.length > 0) { 
+                    const chars = resData.data.slice(0, 20); 
+                    chars.forEach(item => { 
+                        const title = item.character.name; 
+                        const imageUrl = item.character.images.webp.image_url; 
+                        const div = document.createElement('div'); 
+                        div.className = 'search-item'; 
+                        div.innerHTML = `<img src="${imageUrl}"><span>${title}</span>`; 
+                        div.onclick = (e) => { 
+                            e.stopPropagation(); 
+                            handleSelectAPI(context, title, imageUrl); 
+                        }; 
+                        resContainer.appendChild(div); 
+                    }); 
+                } else { 
+                    resContainer.innerHTML = '<div style="padding:10px;">ไม่พบตัวละครในเรื่องนี้</div>'; 
+                } 
+            } catch (e) { 
+                console.error(e); 
+                resContainer.innerHTML = '<div style="padding:10px;">โหลดข้อมูลผิดพลาด</div>';
+            } 
+        }
+
+        function handleSelectAPI(context, title, imageUrl, extra) { 
+            if (context === 'g1') { 
+                document.getElementById(`g1-results-${extra}`).style.display = 'none'; 
+                document.getElementById(`g1-input-${extra}`).value = ''; 
+                roomRef.child(`game1/team${extra}`).set({ title, imageUrl, locked: true }); 
+                playSfxMove(); 
+            } else if (context === 'g2_host') { 
+                document.getElementById('g2-host-results').style.display = 'none'; 
+                document.getElementById('g2-host-input').value = ''; 
+                roomRef.child('game2/target').set({ title, imageUrl }); 
+                playSfxMove(); 
+            } else if (context === 'g2_hb') { 
+                document.getElementById('g2-hb-results').style.display = 'none'; 
+                document.getElementById('g2-hb-input').value = ''; 
+                roomRef.child(`game2/assignments/${myUser.id}/character`).set({ title, imageUrl }); 
+                playSfxMove(); 
+            } else if (context === 'g4') { 
+                document.getElementById('g4-search-results').style.display = 'none'; 
+                document.getElementById('g4-search-input').value = ''; 
+                addPresetToTier(title, imageUrl); 
+            } 
+        } 
+
+        // Close Search Results on outside click
+        document.addEventListener('click', e => { 
+            if(!e.target.closest('.search-container')) { 
+                document.querySelectorAll('.search-results').forEach(el => el.style.display = 'none'); 
+            } 
+        });
 
     </script>
 </body>
